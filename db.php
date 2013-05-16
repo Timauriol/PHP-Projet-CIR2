@@ -5,9 +5,9 @@ include("config.php");
 
 try
 {
-	$db = new PDO($SQL_DSN, $SQL_USER, $SQL_PASS);
+    $db = new PDO($SQL_DSN, $SQL_USER, $SQL_PASS);
 }
-catch (PDOException $e) {                 
-  echo "Echec : " . $e->getMessage();
+catch (PDOException $e) {
+  die("Echec : " . $e->getMessage());
 }
 ?>
