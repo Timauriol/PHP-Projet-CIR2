@@ -1,9 +1,9 @@
 html { font-family: sans-serif; color: #030; }
 
-.error { 
+.error {
     color: #822;
     background: #fdd;
     border: 1px solid #a55;
-    padding: 8px 30px;
+    padding: 8px 15px;
     margin: 10px 0;
 }

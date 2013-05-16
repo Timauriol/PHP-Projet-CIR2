@@ -6,13 +6,14 @@ $error = "";
 session_start(); // initialise $_SESSION
 
 if(isset($_POST["login"]) && isset($_POST["mdp"])){
-    $req = $db->prepare("SELECT 1 FROM utilisateur WHERE login = :login AND mdp = sha2(:mdp, 512)");
+    $req = $db->prepare("SELECT admin FROM utilisateur WHERE login = :login AND mdp = sha2(:mdp, 512)");
     $req->bindParam(':login', $_POST["login"]);
     $req->bindParam(':mdp', $_POST["mdp"]);
 
     if(!$req->execute()) die("Problème de connexion à la base MySQL");
 
     if($req->rowCount() == 0) $error = "Login ou mot de passe erroné.";
+    else if($req->fetch()["admin"] != "1") $error = "Vous n'avez pas les droits d'accès à la console administrateur.";
     else
         $_SESSION["conge_login"] = $_POST["login"];
 }
