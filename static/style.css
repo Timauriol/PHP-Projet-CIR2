@@ -2,6 +2,8 @@ html { font-family: sans-serif; color: #030; }
 
 a { color: #35f; }
 
+body { margin: 0; min-width: 600px;}
+
 .error {
     color: #822;
     background: #fdd;
@@ -13,18 +15,43 @@ a { color: #35f; }
 nav ul {
     text-align: center;
     list-style: none;
+    font-size: 0em;
+    margin: 0;
+    background: #eee;
 }
+
 nav ul li {
     display: inline;
+    padding: 0;
 }
 
 nav a {
-    font-size: 1.1em;
+    font-size: 13px;
     display: inline-block;
     text-decoration: none;
     padding: 6px 10px;
-}
-nav a.actif {
-    background: #ccc;
+    margin: 0;
     color: black;
 }
+
+nav a.actif {
+    background: #8af;
+}
+
+body { position: relative; }
+
+table.calendrier {
+    height: 100%;
+    width: 95%;
+    margin: 0 auto;
+    border-collapse: collapse;
+    table-layout: fixed;
+    padding: 0;
+}
+
+
+
+table tr { margin: 0; padding: 0; }
+table td { margin: 0; padding: 0; border: 1px solid black; }
+
+svg { display: block; height: 90px; width:100%; }

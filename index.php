@@ -27,6 +27,35 @@ include("_head.php");
 
 <p>Bienvenue, <?=$user->nom_prenom?>!</p>
 
+<table class="calendrier">
+<tr>
+<th>Lundi</th>
+<th>Mardi</th>
+<th>Mercredi</th>
+<th>Jeudi</th>
+<th>Vendredi</th>
+<th>Samedi</th>
+<th>Dimanche</th>
+</tr>
+<?php
+for($ligne = 0; $ligne < 6; $ligne++){
+    echo("<tr>");
+    for($colonne = 0; $colonne < 7; $colonne++){
+    ?>
+<td>
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewbox="0 0 100 100" preserveAspectRatio="none">
+        <polygon fill="#9cf" points="0,0 0,100 100,0"/>
+        <polygon fill="#af9" points="100,100 0,100 100,0"/>
+    </svg>
+</td>
+    <?php
+    }
+    echo("</tr>");
+}
+?>
+</table>
+
+
 <?php
 include("_tail.php");
 
