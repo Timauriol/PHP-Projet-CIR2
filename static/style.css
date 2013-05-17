@@ -1,9 +1,30 @@
 html { font-family: sans-serif; color: #030; }
 
+a { color: #35f; }
+
 .error {
     color: #822;
     background: #fdd;
     border: 1px solid #a55;
     padding: 8px 15px;
     margin: 10px 0;
+}
+
+nav ul {
+    text-align: center;
+    list-style: none;
+}
+nav ul li {
+    display: inline;
+}
+
+nav a {
+    font-size: 1.1em;
+    display: inline-block;
+    text-decoration: none;
+    padding: 6px 10px;
+}
+nav a.actif {
+    background: #ccc;
+    color: black;
 }

@@ -17,9 +17,15 @@ if($user->login == ""){
 
 include("_head.php");
 ?>
+<nav>
+    <ul>
+        <li><a <?=isset($_GET["utilisateur"])?'':'class="actif"'?> href=".">Calendrier global</a></li>
+        <li><a <?=isset($_GET["utilisateur"])?'class="actif"':''?> href=".">Calendrier utilisateur</a></li>
+        <li><a href="logout.php">Déconnexion</a></li>
+    </ul>
+</nav>
 
 <p>Bienvenue, <?=$user->nom_prenom?>!</p>
-<a href="logout.php">Déconnexion</a>
 
 <?php
 include("_tail.php");
