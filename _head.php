@@ -1,5 +1,6 @@
 <?php
 include("config.php");
+header("Content-Type: text/html; charset=UTF-8");
 ?>
 <!doctype html>
 <html>
