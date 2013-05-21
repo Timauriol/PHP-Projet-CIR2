@@ -39,7 +39,7 @@ class Utilisateur{
             array_push($tous, new Utilisateur($res[0], $res[1], $res[2]));
         return $tous;
     }
-    public static function recherche($q){
+    public static function recherche($q, $limite = 0){
         // renvoie un Array des utilisateurs correspondant à la recherche
         global $db;
 
@@ -50,6 +50,7 @@ class Utilisateur{
             $query .= " AND ( login COLLATE utf8_general_ci LIKE ? OR nom_prenom COLLATE utf8_general_ci LIKE ? )";
             // les COLLATE blabla sont pour rendre la recherche insensible à la casse
 
+        if($limite != 0) $query .= " LIMIT " . $limite;
         $req = $db->prepare($query);
 
         for($i=0; $i < count($args); $i++){

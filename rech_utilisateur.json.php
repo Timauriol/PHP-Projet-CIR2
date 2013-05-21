@@ -1,11 +1,11 @@
 <?php
-header("content-type", "application/json; charset=UTF-8");
+header("Content-Type: application/json");
 
 include("config.php");
 include("db.php");
 include("utilisateur.class.php");
 
-$utilisateurs = isset($_GET["q"])?Utilisateur::recherche($_GET["q"]):Utilisateur::tous();
+$utilisateurs = isset($_GET["q"])?Utilisateur::recherche($_GET["q"], 4):Utilisateur::tous();
 
 $echappement = array('\\' => '\\\\', '"' => '\\"');
 
