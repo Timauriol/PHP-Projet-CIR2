@@ -35,36 +35,34 @@ class Utilisateur{
         $req = $db->prepare("SELECT login, nom_prenom, admin FROM utilisateur");
         if(!$req->execute()) die("Problème de connexion à la base MySQL");
         $tous = array();
-        while($res = $req->fetch()){
+        while($res = $req->fetch())
             array_push($tous, new Utilisateur($res[0], $res[1], $res[2]));
-        }
         return $tous;
     }
     public static function recherche($q){
         // renvoie un Array des utilisateurs correspondant à la recherche
         global $db;
-        $query = "SELECT login, nom_prenom, admin FROM utilisateur WHERE 1=1";
-        $args = explode(" ", $q);
 
+        $query = "SELECT login, nom_prenom, admin FROM utilisateur WHERE 1=1";
+
+        $args = explode(" ", $q);
         for($i=0; $i < count($args); $i++)
             $query .= " AND ( login COLLATE utf8_general_ci LIKE ? OR nom_prenom COLLATE utf8_general_ci LIKE ? )";
+            // les COLLATE blabla sont pour rendre la recherche insensible à la casse
 
         $req = $db->prepare($query);
 
         for($i=0; $i < count($args); $i++){
-            $arg = "%".$args[$i]."%";
-            $req->bindParam($i*2+1, $arg);
+            $arg = "%".$args[$i]."%"; // % : wildcard
+            $req->bindParam($i*2+1, $arg); // les paramètres commencent à 1
             $req->bindParam($i*2+2, $arg);
         }
 
-
         $res = $req->execute();
 
-
         $utilisateurs = array();
-        while($res = $req->fetch()){
+        while($res = $req->fetch())
             array_push($utilisateurs, new Utilisateur($res[0], $res[1], $res[2]));
-        }
         return $utilisateurs;
     }
 }
