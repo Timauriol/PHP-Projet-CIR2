@@ -55,6 +55,7 @@ for($ligne = 0; $ligne < 6; $ligne++){
 ?>
 </table>
 
+<script src="static/cal.js"></script>
 
 <?php
 include("_tail.php");
