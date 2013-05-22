@@ -58,3 +58,10 @@ table td.autremois { opacity: 0.4; }
 td div.numjour { line-height: 0px; position: relative; top: 1em; text-indent: 0.5em; font-size: 0.8em; color: rgba(0,0,0,0.8); }
 
 svg { display: block; height: 90px; width:100%; }
+
+polygon { fill: rgba(0,0,0,0); }
+.weekend { border-color: #3ac; }
+.ferie { border-color: #d96; }
+.conge { fill: #8e6; }
+.weekend .conge { fill: #9cf; }
+.ferie .conge { fill: #fd8; }
