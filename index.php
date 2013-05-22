@@ -43,6 +43,7 @@ for($ligne = 0; $ligne < 6; $ligne++){
     for($colonne = 0; $colonne < 7; $colonne++){
     ?>
 <td>
+    <div class="numjour"></div>
     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewbox="0 0 100 100" preserveAspectRatio="none">
         <polygon fill="#9cf" points="0,0 0,100 100,0"/>
         <polygon fill="#af9" points="100,100 0,100 100,0"/>

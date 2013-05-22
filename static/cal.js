@@ -7,25 +7,22 @@ function joursDansMois(mois, annee){
 }
 
 function remplirJours(mois, annee){
-    if(!annee || !mois){
+    if(typeof annee === "undefined" || typeof mois === "undefined"){
         var d = new Date();
         annee = d.getFullYear();
         mois = d.getMonth();
     }
     var date = new Date(annee, mois, 1);
-    console.log(date);
-    console.log(date.getDate()-(date.getDay()-1+7)%7);
     date.setDate(date.getDate()-(date.getDay()-1+7)%7); // rembobine jusqu'au dernier lundi
-    console.log(date);
     for(var y = 0; y < 6; y++){
         for(var x = 0; x < 7; x++){                                                        // ↓ il faut sauter la ligne avec les noms des jours de la semaine
             var tdjour = document.querySelector("table.calendrier > tbody > tr:nth-child("+(y+2)+") > td:nth-child("+(x+1)+")");
 
-            var numjour = document.createElement("div");
-            numjour.className = "numjour";
-            numjour.appendChild(document.createTextNode(date.getDate()));
-
-            tdjour.insertBefore(numjour, tdjour.firstChild);
+            var numjour = tdjour.querySelector("div.numjour");
+            if(!numjour.hasChildNodes())
+                numjour.appendChild(document.createTextNode(date.getDate()));
+            else
+                numjour.firstChild.data = date.getDate();
 
             if(date.getMonth() != mois)
                 tdjour.className = "autremois";
