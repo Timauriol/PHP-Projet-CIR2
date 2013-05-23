@@ -20,7 +20,7 @@ include("_head.php");
 <nav>
     <ul>
         <li id="bouton-global"><a>Calendrier global</a></li>
-        <li id="bouton-util" class="actif"><a>Calendrier utilisateur</a>
+        <li id="bouton-util" class="actif"><a>Calendrier employé</a>
             <input type="text" class="recherche" placeholder="Nom ou login"/>
             <ul class="autocomplete">
             </ul>
