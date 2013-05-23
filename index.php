@@ -49,7 +49,7 @@ for($ligne = 0; $ligne < 6; $ligne++){
 <td>
     <div class="numjour"></div>
     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewbox="0 0 100 100" preserveAspectRatio="none">
-        <polygon class="matin" points="0,0 0,100 100,0"/>
+        <polygon class="matin" points="0,0 0,101 101,0"/>
         <polygon class="apresmidi" points="100,100 0,100 100,0"/>
     </svg>
 </td>
