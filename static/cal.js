@@ -166,7 +166,7 @@ function cacherAutocomplete(){
     document.querySelector(".autocomplete").style.display = "none";
 }
 
-function construireUtilAutocomplete(u){
+function construireUtilAutocomplete(u, i){
     var li = document.createElement("li");
     li.className = "utilisateur";
     var nom = document.createElement("div");
@@ -186,6 +186,7 @@ function construireUtilAutocomplete(u){
     }
     li.addEventListener("mousedown", choix, false);
     li.choix = choix;
+    if(i == 0) li.classList.add("actif");
     autocomplete.appendChild(li);
 }
 function construireAutocomplete(utilisateurs){
@@ -193,7 +194,7 @@ function construireAutocomplete(utilisateurs){
     autocomplete = document.querySelector(".autocomplete");
     autocomplete.innerHTML = "";
     for(var i = 0; i < utilisateurs.length; i++){
-        construireUtilAutocomplete(utilisateurs[i]);
+        construireUtilAutocomplete(utilisateurs[i], i);
     }
 }
 
