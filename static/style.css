@@ -44,14 +44,14 @@ nav input {
     max-width: 0;
     opacity: 0;
     transition-property: max-width, opacity, margin;
-    transition: .4s ease-out;
+    transition: .3s ease-out;
     margin: 0;
 }
 
 nav li.actif input {
     max-width: 150px;
     opacity: 1;
-    margin: 0 10px;
+    margin-right: 10px;
 }
 
 body { position: relative; }
