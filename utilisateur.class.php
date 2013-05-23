@@ -43,6 +43,8 @@ class Utilisateur{
         // renvoie un Array des utilisateurs correspondant à la recherche
         global $db;
 
+        if($q === "") return array();
+
         $query = "SELECT login, nom_prenom, admin FROM utilisateur WHERE 1=1";
 
         $args = explode(" ", trim($q));
