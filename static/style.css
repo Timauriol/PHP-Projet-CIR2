@@ -1,6 +1,6 @@
 html { font-family: sans-serif; color: #030; }
 
-a { color: #35f; }
+a { color: #35f; cursor: pointer; }
 
 body { margin: 0; min-width: 600px;}
 
@@ -21,8 +21,9 @@ nav ul {
 }
 
 nav ul li {
-    display: inline;
+    display: inline-block;
     padding: 0;
+    position: relative;
 }
 
 nav a {
@@ -34,8 +35,23 @@ nav a {
     color: black;
 }
 
-nav a.actif {
+nav li.actif {
     background: #8af;
+}
+
+nav input {
+    border: none;
+    max-width: 0;
+    opacity: 0;
+    transition-property: max-width, opacity, margin;
+    transition: .4s ease-out;
+    margin: 0;
+}
+
+nav li.actif input {
+    max-width: 150px;
+    opacity: 1;
+    margin: 0 10px;
 }
 
 body { position: relative; }
@@ -65,3 +81,35 @@ polygon { fill: rgba(0,0,0,0); }
 .conge { fill: #8e6; }
 .weekend .conge { fill: #9cf; }
 .ferie .conge { fill: #fd8; }
+
+ul.autocomplete {
+    position: absolute;
+    width: 100%;
+    padding: 0;
+    z-index: 100;
+    background: white;
+    box-shadow: inset  0 0 0 1px #8af;
+}
+
+.autocomplete li.utilisateur{
+    padding: 0;
+    display: block;
+    margin: 0 1px 1px;
+    padding: 6px 15px;
+    text-align: left;
+    cursor: pointer;
+}
+
+ul:hover > .utilisateur.actif{ background: white; }
+
+.utilisateur.actif,
+.utilisateur:hover,
+ul:hover > .utilisateur.actif:hover { background: #def; }
+
+.autocomplete .nom {
+    font-size: 14px;
+}
+
+.autocomplete .login {
+    font-size: 11px;
+}

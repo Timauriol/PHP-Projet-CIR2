@@ -1,8 +1,18 @@
 <?php
-header("Content-Type: application/json");
-
 include("db.php");
+include("utilisateur.class.php");
+
+session_start();
+
+if(!isset($_SESSION["conge_login"]) || $_SESSION["conge_login"] === "" || (new Utilisateur($_SESSION["conge_login"]))->login === ""){
+    header("HTTP/1.1 403 Forbidden");
+    die("[]");
+}
+
+
 include("conge.class.php");
+
+header("Content-Type: application/json");
 
 $echappement = array('\\' => '\\\\', '"' => '\\"');
 

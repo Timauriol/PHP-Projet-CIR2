@@ -45,7 +45,7 @@ class Utilisateur{
 
         $query = "SELECT login, nom_prenom, admin FROM utilisateur WHERE 1=1";
 
-        $args = explode(" ", $q);
+        $args = explode(" ", trim($q));
         for($i=0; $i < count($args); $i++)
             $query .= " AND ( login COLLATE utf8_general_ci LIKE ? OR nom_prenom COLLATE utf8_general_ci LIKE ? )";
             // les COLLATE blabla sont pour rendre la recherche insensible à la casse
@@ -55,8 +55,8 @@ class Utilisateur{
 
         for($i=0; $i < count($args); $i++){
             $arg = "%".$args[$i]."%"; // % : wildcard
-            $req->bindParam($i*2+1, $arg); // les paramètres commencent à 1
-            $req->bindParam($i*2+2, $arg);
+            $req->bindValue($i*2+1, $arg); // les paramètres commencent à 1
+            $req->bindValue($i*2+2, $arg);
         }
 
         $res = $req->execute();

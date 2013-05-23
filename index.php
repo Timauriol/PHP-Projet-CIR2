@@ -19,8 +19,12 @@ include("_head.php");
 ?>
 <nav>
     <ul>
-        <li><a <?=isset($_GET["utilisateur"])?'':'class="actif"'?> href=".">Calendrier global</a></li>
-        <li><a <?=isset($_GET["utilisateur"])?'class="actif"':''?> href=".">Calendrier utilisateur</a></li>
+        <li id="bouton-global"><a>Calendrier global</a></li>
+        <li id="bouton-util" class="actif"><a>Calendrier utilisateur</a>
+            <input type="text" class="recherche" placeholder="Nom ou login"/>
+            <ul class="autocomplete">
+            </ul>
+        </li>
         <li><a href="logout.php">Déconnexion</a></li>
     </ul>
 </nav>

@@ -1,9 +1,17 @@
 <?php
+include("utilisateur.class.php");
+
+session_start(); // initialise $_SESSION
+
+if(!isset($_SESSION["conge_login"]) || $_SESSION["conge_login"] === "" || (new Utilisateur($_SESSION["conge_login"]))->login === ""){
+    header("HTTP/1.1 403 Forbidden");
+    die("[]");
+}
+
 header("Content-Type: application/json");
 
 include("config.php");
 include("db.php");
-include("utilisateur.class.php");
 
 $utilisateurs = isset($_GET["q"])?Utilisateur::recherche($_GET["q"], 4):Utilisateur::tous();
 
