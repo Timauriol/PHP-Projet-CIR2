@@ -134,9 +134,11 @@ function remplirConges(conges){
             apresmidi.classList.remove("conge");
 
             for(var i = 0; i < conges.length; i++){
+                date.setHours(0);
                 if(conges[i].ts * 1000 == date - 0)
                     matin.classList.add("conge");
-                if(conges[i].ts * 1000 == date - 0 + (60*60*12*1000))
+                date.setHours(12);
+                if(conges[i].ts * 1000 == date - 0)
                     apresmidi.classList.add("conge");
             }
             date.setDate(date.getDate()+1);
