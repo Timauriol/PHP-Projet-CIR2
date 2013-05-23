@@ -236,6 +236,7 @@ window.onload = function(){
     var recherche_input = document.querySelector(".recherche");
     recherche_input.addEventListener("focus", montrerAutocomplete, false);
     recherche_input.addEventListener("blur", cacherAutocomplete, false);
+    recherche_input.addEventListener("focus", recherche, false);
     recherche_input.addEventListener("input", recherche, false);
     recherche_input.addEventListener("keydown", navigationAutocomplete, false);
     document.querySelector("#bouton-global").addEventListener("click", function(){
@@ -252,6 +253,10 @@ window.onload = function(){
             buttons[i].classList.remove("actif");
         this.classList.add("actif");
         recherche_input.focus();
+        recherche_input.select();
+    }, false);
+    recherche_input.addEventListener("click", function(e){
+        e.cancelBubble = true; // évite que le listener sur #bouton-util ↑↑↑ soit activé et sélectionne le texte
     }, false);
 };
 
