@@ -19,8 +19,10 @@ include("_head.php");
 ?>
 <nav>
     <ul>
-        <li id="bouton-global"><a>Calendrier global</a></li>
-        <li id="bouton-util" class="actif"><a>Calendrier employé</a>
+        <li id="bouton-global"><a>Calendrier global</a>
+            <input type="text" class="annee" placeholder="Année"/>
+        </li>
+        <li id="bouton-util"><a>Calendrier employé</a>
             <input type="text" class="recherche" placeholder="Nom ou login"/>
             <ul class="autocomplete">
             </ul>
@@ -29,8 +31,17 @@ include("_head.php");
     </ul>
 </nav>
 
-<p>Bienvenue, <?=$user->nom_prenom?>!</p>
+<div class="container">
 
+<div class="barre-outils">
+<div class="bouton ajout" title="Ajouter">&#10133;</div>
+<div class="bouton deplacement" title="Déplacer">&#9998;</div>
+<div class="bouton suppression" title="Supprimer">&#10060;</div>
+<div class="bouton mois-suivant" title="Mois suivant">▸</div>
+<div class="bouton mois-precedent" title="Mois précédent">◂</div>
+<div class="bouton selecteur-mois"><span class="date">Janvier 1985</span> ▾</div>
+<div style="clear:both;"></div>
+</div>
 <table class="jours">
 <tr>
 <th>Lundi</th>
@@ -62,6 +73,7 @@ for($ligne = 0; $ligne < 6; $ligne++){
 }
 ?>
 </table>
+</div>
 
 <script src="static/cal.js"></script>
 

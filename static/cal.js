@@ -2,8 +2,9 @@
 var CAL_GLOBAL=0;
 var CAL_UTILISATEUR=1;
 
-var mode = CAL_UTILISATEUR;
+var mode = null;
 var login = null;
+var nom_prenom = null;
 
 
 function joursDansMois(mois, annee){
@@ -48,17 +49,27 @@ function clearConges(){
         conges[i].classList.remove("conge");
     }
 }
+
+function nomMois(mois){
+    return ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"][mois%12];
+}
+
 function changeMois(annee, mois){
-    if(typeof annee === "undefined" || typeof mois === "undefined"){
+    if(!annee || (!mois && mois != 0)){
         var d = new Date();
         annee = d.getFullYear();
         mois = d.getMonth();
     }
     window.annee = annee;
     window.mois = mois;
-    var date = datePremiereCase();
 
     clearConges();
+
+    var span_date = document.querySelector(".selecteur-mois .date");
+    span_date.innerHTML = "";
+    span_date.appendChild(document.createTextNode(nomMois(mois) + " " + annee));
+
+    var date = datePremiereCase();
 
     for(var y = 0; y < 6; y++){
         for(var x = 0; x < 7; x++){
@@ -82,10 +93,11 @@ function changeMois(annee, mois){
             date.setDate(date.getDate()+1);
         }
     }
-    if(mode == CAL_UTILISATEUR && login)
+    if(mode == CAL_UTILISATEUR && login && login != "")
         getConges();
     else if(mode == CAL_GLOBAL)
         console.log("TODO"); // TODO
+    majHash();
 }
 
 function getConges(){
@@ -144,6 +156,7 @@ function remplirConges(conges){
             date.setDate(date.getDate()+1);
         }
     }
+    document.querySelector(".container").style.opacity = 1;
 }
 
 var recherche_xhr;
@@ -188,9 +201,13 @@ function construireUtilAutocomplete(u, i){
     function choix(){
         var recherche = document.querySelector(".recherche");
         recherche.value = u.nom_prenom;
+        window.nom_prenom = u.nom_prenom;
         recherche.blur();
         window.login = u.login;
+        document.querySelector(".container").style.opacity = 0;
+        clearConges();
         getConges();
+        majHash();
     }
     li.addEventListener("mousedown", choix, false);
     li.choix = choix;
@@ -240,8 +257,66 @@ function navigationAutocomplete(e){
     }
 }
 
+function setBarreOutils(){
+    var actif = document.querySelector(".bouton.actif");
+    if(actif) actif.classList.remove("actif");
+    this.classList.add("actif");
+}
+
+function initBarreOutils(){
+    var ajout = document.querySelector(".bouton.ajout");
+    var suppr = document.querySelector(".bouton.suppression");
+    var depla = document.querySelector(".bouton.deplacement");
+    ajout.addEventListener("click", setBarreOutils, false);
+    suppr.addEventListener("click", setBarreOutils, false);
+    depla.addEventListener("click", setBarreOutils, false);
+}
+
+function initNavCalendrier(){
+    var suivant = document.querySelector(".mois-suivant");
+    var precedent = document.querySelector(".mois-precedent");
+    var selecteur = document.querySelector(".selecteur-mois");
+    suivant.addEventListener("click", moisSuivant, false);
+    precedent.addEventListener("click", moisPrecedent, false);
+    selecteur.addEventListener("click", function(e){
+        e.preventDefault();
+    }, false);
+}
+
+function moisSuivant(){
+    mois = (mois + 1) % 12;
+    if(mois == 0) annee += 1;
+    changeMois(annee, mois);
+}
+
+function moisPrecedent(){
+    mois -= 1;
+    if(mois == -1){
+        annee -= 1;
+        mois = 11;
+    }
+    changeMois(annee, mois);
+}
+
+function changeMode(mode){
+    if(window.mode == mode) return;
+    window.mode = mode;
+    var actif = document.querySelector("nav .actif");
+    if(actif) actif.classList.remove("actif")
+    document.querySelector(".container").style.opacity = 0;
+    clearConges();
+    if(mode == CAL_UTILISATEUR){
+        document.querySelector("#bouton-util").classList.add("actif");
+        if(login)
+            getConges();
+    }
+    else if(mode == CAL_GLOBAL){
+        document.querySelector("#bouton-global").classList.add("actif");
+        // d'autres trucs
+    }
+}
+
 window.onload = function(){
-    changeMois();
     var recherche_input = document.querySelector(".recherche");
     recherche_input.addEventListener("focus", montrerAutocomplete, false);
     recherche_input.addEventListener("blur", cacherAutocomplete, false);
@@ -249,25 +324,64 @@ window.onload = function(){
     recherche_input.addEventListener("input", recherche, false);
     recherche_input.addEventListener("keydown", navigationAutocomplete, false);
     document.querySelector("#bouton-global").addEventListener("click", function(){
-        mode = CAL_GLOBAL;
-        var buttons = this.parentElement.children;
-        for(var i=0; i < buttons.length; i++)
-            buttons[i].classList.remove("actif");
-        this.classList.add("actif");
+        changeMode(CAL_GLOBAL);
     }, false);
     document.querySelector("#bouton-util").addEventListener("click", function(){
-        mode = CAL_UTILISATEUR;
-        var buttons = this.parentElement.children;
-        for(var i=0; i < buttons.length; i++)
-            buttons[i].classList.remove("actif");
-        this.classList.add("actif");
+        changeMode(CAL_UTILISATEUR);
         recherche_input.focus();
         recherche_input.select();
     }, false);
     recherche_input.addEventListener("click", function(e){
         e.cancelBubble = true; // évite que le listener sur #bouton-util ↑↑↑ soit activé et sélectionne le texte
     }, false);
+    initNavCalendrier();
+    initBarreOutils();
+    if(window.location.hash != ""){
+        var args = window.location.hash.slice(1).split("&");
+        console.log(args);
+        for(var i = 0; i < args.length; i++){
+            var arg = args[i].split("=");
+            if(arg.length == 2){
+                switch(arg[0]){
+                    case "n":
+                        document.querySelector(".recherche").value = arg[1];
+                        window.nom_prenom = arg[1];
+                        break;
+                    case "l":
+                        window.login = arg[1];
+                        changeMode(CAL_UTILISATEUR);
+                        break;
+                    case "m":
+                        window.mois = arg[1] - 0;
+                        break;
+                    case "a":
+                        window.annee = arg[1] - 0;
+                        break;
+                }
+            }
+        }
+    }
+    changeMois(window.annee, window.mois);
 };
+
+function majHash(){
+    var hash = "";
+    if(window.mode == CAL_UTILISATEUR){
+        if(window.login){
+            hash += "&l=" + window.login;
+        }
+        if(window.nom_prenom){
+            hash += "&n=" + window.nom_prenom;
+        }
+    }
+    if(typeof window.mois != "undefined"){
+        hash += "&m=" + window.mois;
+    }
+    if(window.annee){
+        hash += "&a=" + window.annee;
+    }
+    window.location.hash = hash;
+}
 
 /* http://stackoverflow.com/a/1284335 */
 function getPaques(Y) {
@@ -285,3 +399,9 @@ function getPaques(Y) {
 
     return [M, D];
 }
+
+var OUTIL_AJOUT = 0;
+var OUTIL_SUPPR = 1;
+var OUTIL_DEPLA = 2;
+
+var outil = null;

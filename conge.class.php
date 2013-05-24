@@ -4,8 +4,19 @@ class Conge{
     public $login;
     public $date;
     function __construct($date, $login){
+        if(!is_string($login) || !is_string($date)) die("Paramètres incorrects pour Conge()");
         $this->login = $login;
         $this->date = $date;
+    }
+    public function supprimer(){
+        global $db;
+        $req = $db->prepare("DELETE FROM conges WHERE date = ? AND login = ?");
+        $req->execute(array($this->date, $this->login));
+    }
+    public function inserer(){
+        global $db;
+        $req = $db->prepare("INSERT INTO conges (date, login) VALUES (?, ?)");
+        $req->execute(array($this->date, $this->login));
     }
     public static function liste($login = null, $date_debut = null, $date_fin = null, $limite = null){
         // les dates sont attendues sous format ISO : 2000-12-31 (ou 2000-12-31 23:59)
