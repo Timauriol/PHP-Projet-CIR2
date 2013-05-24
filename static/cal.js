@@ -61,8 +61,8 @@ function changeMois(annee, mois){
     clearConges();
 
     for(var y = 0; y < 6; y++){
-        for(var x = 0; x < 7; x++){                                                        // ↓ il faut sauter la ligne avec les noms des jours de la semaine
-            var tdjour = document.querySelector("table.calendrier > tbody > tr:nth-child("+(y+2)+") > td:nth-child("+(x+1)+")");
+        for(var x = 0; x < 7; x++){
+            var tdjour = document.querySelector("table.calendrier > tbody > tr:nth-child("+(y+1)+") > td:nth-child("+(x+1)+")");
 
             var numjour = tdjour.querySelector("div.numjour");
             if(!numjour.hasChildNodes())
@@ -126,8 +126,8 @@ function datePremiereCase(){
 function remplirConges(conges){
     var date = datePremiereCase();
     for(var y = 0; y < 6; y++){
-        for(var x = 0; x < 7; x++){                                                        // ↓ il faut sauter la ligne avec les noms des jours de la semaine
-            var tdjour = document.querySelector("table.calendrier > tbody > tr:nth-child("+(y+2)+") > td:nth-child("+(x+1)+")");
+        for(var x = 0; x < 7; x++){
+            var tdjour = document.querySelector("table.calendrier > tbody > tr:nth-child("+(y+1)+") > td:nth-child("+(x+1)+")");
             var matin = tdjour.querySelector("polygon.matin");
             var apresmidi = tdjour.querySelector("polygon.apresmidi");
             matin.classList.remove("conge");

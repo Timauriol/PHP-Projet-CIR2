@@ -56,28 +56,31 @@ nav li.actif input {
 
 body { position: relative; }
 
-table.calendrier {
-    height: 100%;
+table.calendrier,
+table.jours {
     width: 95%;
+    max-width: 1000px;
+    padding: 0 5%;
     margin: 0 auto;
     border-collapse: collapse;
     table-layout: fixed;
-    padding: 0;
 }
 
 
 
-table tr { margin: 0; padding: 0; }
-table td { margin: 0; padding: 0; border: 1px solid #999; }
-table td.autremois { opacity: 0.4; }
+.calendrier tr { margin: 0; padding: 0; border: 1px solid #ccc;}
+.calendrier col { margin: 0; padding: 0; border: 1px solid #ccc;}
+.calendrier td { margin: 0; padding: 0; border: 1px solid #999; background: #fafafa; }
+.calendrier td.autremois { background: white; border: none; }
+.calendrier .weekend { border-color: #3ac; }
+.calendrier .ferie { border-color: #d96; }
 
-td div.numjour { line-height: 0px; position: relative; top: 1em; text-indent: 0.5em; font-size: 0.8em; color: rgba(0,0,0,0.8); }
+td div.numjour { line-height: 0px; position: relative; top: 1em; text-indent: 0.5em; font-size: 0.8em; color: rgba(0,0,0,0.8); z-index: 10; cursor: default; }
 
+.autremois svg { opacity: 0.3; }
 svg { display: block; height: 90px; width:100%; }
 
 polygon { fill: rgba(0,0,0,0); }
-.weekend { border-color: #3ac; }
-.ferie { border-color: #d96; }
 .conge { fill: #8e6; }
 .weekend .conge { fill: #9cf; }
 .ferie .conge { fill: #fd8; }

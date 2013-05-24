@@ -31,7 +31,7 @@ include("_head.php");
 
 <p>Bienvenue, <?=$user->nom_prenom?>!</p>
 
-<table class="calendrier">
+<table class="jours">
 <tr>
 <th>Lundi</th>
 <th>Mardi</th>
@@ -41,6 +41,9 @@ include("_head.php");
 <th>Samedi</th>
 <th>Dimanche</th>
 </tr>
+</table>
+<table class="calendrier">
+<col/> <col/> <col/> <col/> <col/> <col/> <col/>
 <?php
 for($ligne = 0; $ligne < 6; $ligne++){
     echo("<tr>");
