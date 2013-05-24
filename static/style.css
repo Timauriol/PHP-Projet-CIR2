@@ -68,6 +68,11 @@ table.jours {
     margin: 0 auto;
     border-collapse: collapse;
     table-layout: fixed;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    cursor: default;
 }
 
 
@@ -79,7 +84,15 @@ table.jours {
 .calendrier .weekend { border-color: #3ac; }
 .calendrier .ferie { border-color: #d96; }
 
-td div.numjour { line-height: 0px; position: relative; top: 1em; text-indent: 0.5em; font-size: 0.8em; color: rgba(0,0,0,0.8); z-index: 10; cursor: default; }
+td div.numjour {
+    line-height: 0px;
+    position: relative;
+    top: 1em;
+    text-indent: 0.5em;
+    font-size: 0.8em;
+    color: rgba(0,0,0,0.8);
+    z-index: 10;
+}
 
 .autremois svg { opacity: 0.3; }
 svg { display: block; height: 90px; width:100%; }
