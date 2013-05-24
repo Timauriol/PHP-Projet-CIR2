@@ -54,6 +54,10 @@ nav li.actif input {
     margin-right: 10px;
 }
 
+input.spinner {
+    background: url("spinner.gif") 95% center no-repeat, white;
+}
+
 body { position: relative; }
 
 table.calendrier,

@@ -154,10 +154,16 @@ function recherche(){
     recherche_xhr = new XMLHttpRequest();
     recherche_xhr.open("GET", "utilisateur.json.php?q=" + encodeURIComponent(document.querySelector(".recherche").value), true);
     recherche_xhr.onreadystatechange = function(){
-        if(recherche_xhr.readyState == 4)
+        if(recherche_xhr.readyState == 4){
+            document.querySelector(".recherche").classList.remove("spinner");
             construireAutocomplete(eval(recherche_xhr.responseText));
+        }
     }
     recherche_xhr.send();
+    window.setTimeout(function(){
+        if(recherche_xhr.readyState < 4)
+            document.querySelector(".recherche").classList.add("spinner");
+    }, 400);
 }
 
 function montrerAutocomplete(){
