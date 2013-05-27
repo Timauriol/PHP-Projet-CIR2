@@ -178,13 +178,16 @@ td div.numjour {
     z-index: 10;
 }
 
-.autremois svg { opacity: 0.3; }
 svg { display: block; height: 90px; width:100%; }
+
+.autremois polygon:not(.selectionne) { opacity: 0.3; }
 
 polygon { fill: rgba(0,0,0,0); }
 .conge { fill: #8e6; }
 .weekend .conge { fill: #9cf; }
 .ferie .conge { fill: #fd8; }
+polygon.selectionne { fill: #cef; }
+.ferie polygon.selectionne, .weekend polygon.selectionne { opacity: 0.4; }
 
 ul.autocomplete {
     position: absolute;

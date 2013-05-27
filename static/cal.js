@@ -90,6 +90,9 @@ function changeMois(annee, mois){
             else if(date.getDay() == 6 || date.getDay() == 0)
                 tdjour.classList.add("weekend");
 
+            tdjour.querySelector("polygon.matin").date = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0);
+            tdjour.querySelector("polygon.apresmidi").date = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 12);
+
             date.setDate(date.getDate()+1);
         }
     }
@@ -264,8 +267,11 @@ function initBarreOutils(){
     var suppr = document.querySelector(".bouton.suppression");
     var depla = document.querySelector(".bouton.deplacement");
     ajout.addEventListener("click", setBarreOutils, false);
+    ajout.addEventListener("click", function(){outil = OUTIL_AJOUT;}, false);
     suppr.addEventListener("click", setBarreOutils, false);
+    suppr.addEventListener("click", function(){outil = OUTIL_SUPPR;}, false);
     depla.addEventListener("click", setBarreOutils, false);
+    depla.addEventListener("click", function(){outil = OUTIL_DEPLA;}, false);
 }
 
 function initNavCalendrier(){
@@ -347,6 +353,7 @@ window.onload = function(){
     }, false);
     initNavCalendrier();
     initBarreOutils();
+    initSelection();
     if(window.location.hash != ""){
         var args = window.location.hash.slice(1).split("&");
         for(var i = 0; i < args.length; i++){
@@ -409,6 +416,92 @@ function getPaques(Y) {
     var D = L + 28 - 31*Math.floor(M/4);
 
     return [M, D];
+}
+
+function initSelection(){
+    var polygons = document.querySelectorAll("polygon");
+    for(var i = 0; i < polygons.length; i++)
+        polygons[i].addEventListener("mousedown", debutSelection, false);
+}
+
+var selection;
+var filtreSelection = function(el){ return true; }
+
+function debutSelection(){
+    if(outil == OUTIL_AJOUT)
+        filtreSelection = function(el){ return el && !el.classList.contains("conge"); }
+    else if(outil == OUTIL_SUPPR)
+        filtreSelection = function(el){ return el && el.classList.contains("conge"); }
+    else if(outil == OUTIL_DEPLA)
+        filtreSelection = function(el){ return el && el.classList.contains("conge"); }
+    else return
+
+    var polygons = document.querySelectorAll("polygon");
+    for(var i = 0; i < polygons.length; i++)
+        polygons[i].addEventListener("mouseover", modifieSelection, false);
+    document.addEventListener("mouseup", finSelection, false);
+    selection = [this];
+    this.classList.add("selectionne");
+}
+
+function congePrecedent(el){
+    if(!el) return el;
+    if(el.previousElementSibling) return el.previousElementSibling;
+                 /* ↓ svg         ↓ td */
+    var td = el.parentElement.parentElement.previousElementSibling;
+    if(td) return td.querySelector("polygon:nth-child(2)");
+                 /* ↓ svg         ↓ td          ↓ tr */
+    var tr = el.parentElement.parentElement.parentElement.previousElementSibling;
+    if(tr) return tr.querySelector("td:nth-child(7) polygon:nth-child(2)");
+    return null;
+}
+
+function congeSuivant(el){
+    if(!el) return el; // congeSuivant(null) = null
+    if(el.nextElementSibling) return el.nextElementSibling;
+                 /* ↓ svg         ↓ td */
+    var td = el.parentElement.parentElement.nextElementSibling;
+    if(td) return td.querySelector("polygon:nth-child(1)");
+                 /* ↓ svg         ↓ td          ↓ tr */
+    var tr = el.parentElement.parentElement.parentElement.nextElementSibling;
+    if(tr) return tr.querySelector("td:nth-child(1) polygon:nth-child(1)");
+    return null;
+}
+
+function modifieSelection(){
+    if(selection[0].compareDocumentPosition(this) & Node.DOCUMENT_POSITION_PRECEDING)
+        var suiv = congePrecedent;
+    else if(selection[0].compareDocumentPosition(this) & Node.DOCUMENT_POSITION_FOLLOWING)
+        var suiv = congeSuivant;
+    else
+        var suiv = function(){return null;};
+    var el = selection[0];
+
+    // ça pourrait être plus propre et ne pas rechercher toute la sélection à chaque fois
+    // mais bon ça tourne raisonnablement vite tel quel
+    var polygons = document.querySelectorAll("polygon.selectionne");
+    for(var i = 0; i < polygons.length; i++){
+        polygons[i].classList.remove("selectionne");
+    }
+
+    selection = []
+    while(el){
+        if(filtreSelection(el)){
+            selection.push(el);
+            el.classList.add("selectionne");
+        }
+        el = el==this?null:suiv(el);
+    }
+}
+
+function finSelection(){
+    var polygons = document.querySelectorAll("polygon");
+    for(var i = 0; i < polygons.length; i++){
+        polygons[i].classList.remove("selectionne");
+        polygons[i].removeEventListener("mouseover", modifieSelection, false);
+    }
+    document.removeEventListener("mouseup", finSelection, false);
+
 }
 
 var OUTIL_AJOUT = 0;
