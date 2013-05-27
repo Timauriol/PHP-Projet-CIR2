@@ -89,6 +89,7 @@ function changeMois(annee, mois){
                 tdjour.classList.add("ferie");
             else if(date.getDay() == 6 || date.getDay() == 0)
                 tdjour.classList.add("weekend");
+            else tdjour.classList.add("normal");
 
             tdjour.querySelector("polygon.matin").date = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0);
             tdjour.querySelector("polygon.apresmidi").date = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 12);
@@ -122,9 +123,10 @@ function getConges(){
                 alert("Une erreur est survenue lors de la récupération des congés.");
             }
             else
-                remplirConges(eval(xhr.responseText));
+                remplirConges(JSON.parse(xhr.responseText));
         }
     }
+    document.body.classList.add("charge");
     xhr.send();
 }
 
@@ -156,6 +158,7 @@ function remplirConges(conges){
         }
     }
     document.querySelector(".container").style.opacity = 1;
+    document.body.classList.remove("charge");
 }
 
 var recherche_xhr;
@@ -168,7 +171,7 @@ function recherche(){
     recherche_xhr.onreadystatechange = function(){
         if(recherche_xhr.readyState == 4){
             document.querySelector(".recherche").classList.remove("spinner");
-            construireAutocomplete(eval(recherche_xhr.responseText));
+            construireAutocomplete(JSON.parse(recherche_xhr.responseText));
         }
     }
     recherche_xhr.send();
@@ -428,10 +431,16 @@ var selection;
 var filtreSelection = function(el){ return true; }
 
 function debutSelection(){
-    if(outil == OUTIL_AJOUT)
+    if(outil == OUTIL_AJOUT && !this.classList.contains("conge"))
         filtreSelection = function(el){ return el && !el.classList.contains("conge"); }
-    else if(outil == OUTIL_SUPPR)
-        filtreSelection = function(el){ return el && el.classList.contains("conge"); }
+    else if(outil == OUTIL_SUPPR && this.classList.contains("conge")){
+        var td = this.parentElement.parentElement;
+        var classe = td.classList.contains("weekend")? "weekend" :
+                     td.classList.contains("ferie")? "ferie":
+                     "normal";
+        console.log(classe);
+        filtreSelection = function(el){ return el && el.classList.contains("conge") && el.parentElement.parentElement.classList.contains(classe); }
+    }
     else if(outil == OUTIL_DEPLA)
         filtreSelection = function(el){ return el && el.classList.contains("conge"); }
     else return
@@ -494,6 +503,11 @@ function modifieSelection(){
     }
 }
 
+function jsToPHPDate(date){
+    return date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate() + " " +
+        date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+}
+
 function finSelection(){
     var polygons = document.querySelectorAll("polygon");
     for(var i = 0; i < polygons.length; i++){
@@ -502,6 +516,38 @@ function finSelection(){
     }
     document.removeEventListener("mouseup", finSelection, false);
 
+    switch(outil){
+        case OUTIL_AJOUT:
+            var conges = [];
+            document.body.classList.add("charge");
+            for(var i = 0; i < selection.length; i++){
+                selection[i].classList.add("conge");
+                conges.push({"login": login, "date": jsToPHPDate(selection[i].date), "ts": selection[i].date-0});
+            }
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "conge.json.php?action=inserer", true);
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState >= 4)
+                    getConges(); // on rafraichit
+            }
+            xhr.send(JSON.stringify(conges));
+            break;
+        case OUTIL_SUPPR:
+            var conges = [];
+            document.body.classList.add("charge");
+            for(var i = 0; i < selection.length; i++){
+                selection[i].classList.remove("conge");
+                conges.push({"login": login, "date": jsToPHPDate(selection[i].date), "ts": selection[i].date-0});
+            }
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "conge.json.php?action=supprimer", true);
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState >= 4)
+                    getConges();
+            }
+            xhr.send(JSON.stringify(conges));
+    }
+    selection = []
 }
 
 var OUTIL_AJOUT = 0;

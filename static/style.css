@@ -159,6 +159,11 @@ table.jours {
     cursor: default;
 }
 
+body.charge table.calendrier,
+body.charge table.jours {
+    cursor: wait;
+}
+
 
 
 .calendrier tr { margin: 0; padding: 0; border: 1px solid #ccc;}
