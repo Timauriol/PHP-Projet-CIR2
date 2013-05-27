@@ -61,6 +61,7 @@ input.spinner {
 body { position: relative; }
 
 div.barre-outils {
+    line-height: 15px;
     margin: 20px auto;
     user-select: none;
     -moz-user-select: none;
@@ -68,9 +69,15 @@ div.barre-outils {
     -ms-user-select: none;
 }
 
-.bouton span {
+.bouton span{
+    font-family: Entypo, sans-serif;
+    line-height: 0;
+    font-size: 30px;
+}
+.bouton span.date {
     font-size: 13px;
     vertical-align: top;
+    line-height: 1em;
 }
 
 @font-face {
@@ -83,8 +90,6 @@ div.barre-outils {
 }
 
 .bouton {
-    font-family: Entypo, sans-serif;
-    font-size: 30px;
     display: inline-block;
     background: #ddd;
     box-shadow: 0 0 0 1px #bbb, inset 0 1px 0 0 rgba(255,255,255,0.6);
@@ -95,8 +100,6 @@ div.barre-outils {
     color: #555;
     border-radius: 2px;
     margin: 0 10px;
-    line-height: 15px;
-    vertical-align: center;
     float: left;
 }
 
@@ -192,7 +195,7 @@ polygon { fill: rgba(0,0,0,0); }
 .weekend .conge { fill: #9cf; }
 .ferie .conge { fill: #fd8; }
 polygon.selectionne { fill: #cef; }
-.ferie polygon.selectionne, .weekend polygon.selectionne { opacity: 0.4; }
+.ferie polygon.conge.selectionne, .weekend polygon.conge.selectionne { opacity: 0.4; }
 
 ul.autocomplete {
     position: absolute;
