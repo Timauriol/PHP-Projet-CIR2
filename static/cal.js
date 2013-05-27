@@ -427,8 +427,12 @@ function initSelection(){
         polygons[i].addEventListener("mousedown", debutSelection, false);
 }
 
-var selection;
+var selection = [];
 var filtreSelection = function(el){ return true; }
+
+var DEPLA_SELEC = 0;
+var DEPLA_DEPLA = 1;
+var mode_depla = DEPLA_SELEC;
 
 function debutSelection(){
     if(outil == OUTIL_AJOUT && !this.classList.contains("conge"))
@@ -438,12 +442,25 @@ function debutSelection(){
         var classe = td.classList.contains("weekend")? "weekend" :
                      td.classList.contains("ferie")? "ferie":
                      "normal";
-        console.log(classe);
         filtreSelection = function(el){ return el && el.classList.contains("conge") && el.parentElement.parentElement.classList.contains(classe); }
     }
-    else if(outil == OUTIL_DEPLA)
+    else if(outil == OUTIL_DEPLA && this.classList.contains("conge") && !this.classList.contains("selectionne")){
+        for(var i = 0; i < selection.length; i++)
+            selection[i].classList.remove("selectionne");
+        selection = [];
         filtreSelection = function(el){ return el && el.classList.contains("conge"); }
-    else return
+        mode_depla = DEPLA_SELEC;
+    }
+    else if(outil == OUTIL_DEPLA && selection.length != 0 && this.classList.contains("selectionne")){
+        mode_depla = DEPLA_DEPLA;
+    }
+    else if(outil == OUTIL_DEPLA && selection.length != 0 && !this.classList.contains("selectionne")){
+        for(var i = 0; i < selection.length; i++)
+            selection[i].classList.remove("selectionne");
+        selection = [];
+        return;
+    }
+    else return;
 
     var polygons = document.querySelectorAll("polygon");
     for(var i = 0; i < polygons.length; i++)
@@ -510,44 +527,34 @@ function jsToPHPDate(date){
 
 function finSelection(){
     var polygons = document.querySelectorAll("polygon");
-    for(var i = 0; i < polygons.length; i++){
-        polygons[i].classList.remove("selectionne");
+    for(var i = 0; i < polygons.length; i++)
         polygons[i].removeEventListener("mouseover", modifieSelection, false);
-    }
     document.removeEventListener("mouseup", finSelection, false);
 
-    switch(outil){
-        case OUTIL_AJOUT:
-            var conges = [];
-            document.body.classList.add("charge");
-            for(var i = 0; i < selection.length; i++){
+    if(outil == OUTIL_AJOUT || outil == OUTIL_SUPPR){
+        for(var i = 0; i < polygons.length; i++)
+            polygons[i].classList.remove("selectionne");
+        var conges = [];
+        document.body.classList.add("charge");
+        for(var i = 0; i < selection.length; i++){
+            if(outil == OUTIL_AJOUT)
                 selection[i].classList.add("conge");
-                conges.push({"login": login, "date": jsToPHPDate(selection[i].date), "ts": selection[i].date-0});
-            }
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "conge.json.php?action=inserer", true);
-            xhr.onreadystatechange = function(){
-                if(xhr.readyState >= 4)
-                    getConges(); // on rafraichit
-            }
-            xhr.send(JSON.stringify(conges));
-            break;
-        case OUTIL_SUPPR:
-            var conges = [];
-            document.body.classList.add("charge");
-            for(var i = 0; i < selection.length; i++){
+            else
                 selection[i].classList.remove("conge");
-                conges.push({"login": login, "date": jsToPHPDate(selection[i].date), "ts": selection[i].date-0});
-            }
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "conge.json.php?action=supprimer", true);
-            xhr.onreadystatechange = function(){
-                if(xhr.readyState >= 4)
-                    getConges();
-            }
-            xhr.send(JSON.stringify(conges));
+            conges.push({"login": login, "date": jsToPHPDate(selection[i].date), "ts": selection[i].date-0});
+        }
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "conge.json.php?action="+(outil==OUTIL_AJOUT?"inserer":"supprimer"), true);
+        xhr.onreadystatechange = function(){
+            if(xhr.readyState >= 4)
+                getConges(); // on rafraichit
+        }
+        xhr.send(JSON.stringify(conges));
+        selection = [];
     }
-    selection = []
+    else if(mode_depla = DEPLA_SELEC){
+    }
+    else{}
 }
 
 var OUTIL_AJOUT = 0;
