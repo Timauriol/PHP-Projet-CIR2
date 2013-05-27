@@ -34,12 +34,12 @@ include("_head.php");
 <div class="container">
 
 <div class="barre-outils">
-<div class="bouton ajout" title="Ajouter"><span>&#10133;</span></div>
-<div class="bouton deplacement" title="Déplacer"><span>&#9998;</span></div>
-<div class="bouton suppression" title="Supprimer"><span>&#10060;</span></div>
-<div class="bouton mois-suivant" title="Mois suivant"><span>▸</span></div>
-<div class="bouton mois-precedent" title="Mois précédent"><span>◂</span></div>
-<div class="bouton selecteur-mois"><span class="date">Janvier 1985</span> <span>▾</span></div>
+<div class="bouton ajout" title="Ajouter"><img src="static/plus.png"/></div>
+<div class="bouton deplacement" title="Déplacer"><img src="static/depl.png"/></div>
+<div class="bouton suppression" title="Supprimer"><img src="static/suppr.png"></div>
+<div class="bouton mois-suivant" title="Mois suivant"><img src="static/suiv.png"></div>
+<div class="bouton mois-precedent" title="Mois précédent"><img src="static/prec.png"></div>
+<div class="bouton selecteur-mois"><span class="date">Janvier 1985</span> <img src="static/menu.png"></div>
 <div style="clear:both;"></div>
 </div>
 <table class="jours">
