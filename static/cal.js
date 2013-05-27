@@ -93,10 +93,6 @@ function changeMois(annee, mois){
             date.setDate(date.getDate()+1);
         }
     }
-    if(mode == CAL_UTILISATEUR && login && login != "")
-        getConges();
-    else if(mode == CAL_GLOBAL)
-        console.log("TODO"); // TODO
     majHash();
 }
 
@@ -283,10 +279,20 @@ function initNavCalendrier(){
     }, false);
 }
 
+function rafraichir(){
+    if(window.mode == CAL_UTILISATEUR && window.login){
+        getConges();
+    }
+    else{
+        // d'autres trucs
+    }
+}
+
 function moisSuivant(){
     mois = (mois + 1) % 12;
     if(mois == 0) annee += 1;
     changeMois(annee, mois);
+    rafraichir();
 }
 
 function moisPrecedent(){
@@ -296,6 +302,7 @@ function moisPrecedent(){
         mois = 11;
     }
     changeMois(annee, mois);
+    rafraichir();
 }
 
 function changeMode(mode){
@@ -307,16 +314,18 @@ function changeMode(mode){
     clearConges();
     if(mode == CAL_UTILISATEUR){
         document.querySelector("#bouton-util").classList.add("actif");
-        if(login)
-            getConges();
     }
     else if(mode == CAL_GLOBAL){
         document.querySelector("#bouton-global").classList.add("actif");
-        // d'autres trucs
+        cacherAutocomplete();
     }
+    majHash();
 }
 
 window.onload = function(){
+    var i = new Image();
+    i.src = "static/spinner.gif"; // préchargement du spinner de la recherche
+
     var recherche_input = document.querySelector(".recherche");
     recherche_input.addEventListener("focus", montrerAutocomplete, false);
     recherche_input.addEventListener("blur", cacherAutocomplete, false);
@@ -325,11 +334,13 @@ window.onload = function(){
     recherche_input.addEventListener("keydown", navigationAutocomplete, false);
     document.querySelector("#bouton-global").addEventListener("click", function(){
         changeMode(CAL_GLOBAL);
+        rafraichir();
     }, false);
     document.querySelector("#bouton-util").addEventListener("click", function(){
         changeMode(CAL_UTILISATEUR);
         recherche_input.focus();
         recherche_input.select();
+        rafraichir();
     }, false);
     recherche_input.addEventListener("click", function(e){
         e.cancelBubble = true; // évite que le listener sur #bouton-util ↑↑↑ soit activé et sélectionne le texte
@@ -338,7 +349,6 @@ window.onload = function(){
     initBarreOutils();
     if(window.location.hash != ""){
         var args = window.location.hash.slice(1).split("&");
-        console.log(args);
         for(var i = 0; i < args.length; i++){
             var arg = args[i].split("=");
             if(arg.length == 2){
@@ -349,7 +359,6 @@ window.onload = function(){
                         break;
                     case "l":
                         window.login = arg[1];
-                        changeMode(CAL_UTILISATEUR);
                         break;
                     case "m":
                         window.mois = arg[1] - 0;
@@ -362,6 +371,8 @@ window.onload = function(){
         }
     }
     changeMois(window.annee, window.mois);
+    if(window.login) changeMode(CAL_UTILISATEUR);
+    rafraichir();
 };
 
 function majHash(){

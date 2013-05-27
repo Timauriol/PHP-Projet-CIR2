@@ -96,6 +96,7 @@ div.barre-outils {
     border-radius: 2px;
     margin: 0 10px;
     line-height: 15px;
+    vertical-align: center;
     float: left;
 }
 
