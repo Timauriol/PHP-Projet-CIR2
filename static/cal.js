@@ -428,36 +428,41 @@ function initSelection(){
 }
 
 var selection = [];
-var filtreSelection = function(el){ return true; }
+var filtreSelection = function(el){ return 1; }
+var ancienneSelection = [];
 
 var DEPLA_SELEC = 0;
 var DEPLA_DEPLA = 1;
-var mode_depla = DEPLA_SELEC;
+var modeDepla = DEPLA_SELEC;
+
+var origSelection;
 
 function debutSelection(){
+    origSelection = this;
+    var td = this.parentElement.parentElement;
+    var classe = td.classList.contains("weekend")? "weekend" :
+                    td.classList.contains("ferie")? "ferie":
+                    "normal";
     if(outil == OUTIL_AJOUT && !this.classList.contains("conge"))
-        filtreSelection = function(el){ return el && !el.classList.contains("conge"); }
-    else if(outil == OUTIL_SUPPR && this.classList.contains("conge")){
-        var td = this.parentElement.parentElement;
-        var classe = td.classList.contains("weekend")? "weekend" :
-                     td.classList.contains("ferie")? "ferie":
-                     "normal";
-        filtreSelection = function(el){ return el && el.classList.contains("conge") && el.parentElement.parentElement.classList.contains(classe); }
-    }
+        filtreSelection = function(el){ return el && !el.classList.contains("conge")? 1 : -1; }
+    else if(outil == OUTIL_SUPPR && this.classList.contains("conge"))
+        filtreSelection = function(el){ return el && el.classList.contains("conge") && el.parentElement.parentElement.classList.contains(classe)? 1 : -1; }
     else if(outil == OUTIL_DEPLA && this.classList.contains("conge") && !this.classList.contains("selectionne")){
+        modeDepla = DEPLA_SELEC;
         for(var i = 0; i < selection.length; i++)
             selection[i].classList.remove("selectionne");
         selection = [];
-        filtreSelection = function(el){ return el && el.classList.contains("conge"); }
-        mode_depla = DEPLA_SELEC;
+        filtreSelection = function(el){
+            return !el || !el.classList.contains("conge") ? 0 : !el.parentElement.parentElement.classList.contains(classe) ? -1 : 1;
+        }
     }
     else if(outil == OUTIL_DEPLA && selection.length != 0 && this.classList.contains("selectionne")){
-        mode_depla = DEPLA_DEPLA;
+        modeDepla = DEPLA_DEPLA;
+        ancienneSelection = selection.slice(0); // copie
     }
     else if(outil == OUTIL_DEPLA && selection.length != 0 && !this.classList.contains("selectionne")){
         for(var i = 0; i < selection.length; i++)
             selection[i].classList.remove("selectionne");
-        selection = [];
         return;
     }
     else return;
@@ -466,8 +471,8 @@ function debutSelection(){
     for(var i = 0; i < polygons.length; i++)
         polygons[i].addEventListener("mouseover", modifieSelection, false);
     document.addEventListener("mouseup", finSelection, false);
-    selection = [this];
     this.classList.add("selectionne");
+    modifieSelection.bind(this)();
 }
 
 function congePrecedent(el){
@@ -495,28 +500,90 @@ function congeSuivant(el){
 }
 
 function modifieSelection(){
-    if(selection[0].compareDocumentPosition(this) & Node.DOCUMENT_POSITION_PRECEDING)
-        var suiv = congePrecedent;
-    else if(selection[0].compareDocumentPosition(this) & Node.DOCUMENT_POSITION_FOLLOWING)
-        var suiv = congeSuivant;
-    else
-        var suiv = function(){return null;};
-    var el = selection[0];
-
-    // ça pourrait être plus propre et ne pas rechercher toute la sélection à chaque fois
-    // mais bon ça tourne raisonnablement vite tel quel
-    var polygons = document.querySelectorAll("polygon.selectionne");
-    for(var i = 0; i < polygons.length; i++){
-        polygons[i].classList.remove("selectionne");
-    }
-
-    selection = []
-    while(el){
-        if(filtreSelection(el)){
-            selection.push(el);
-            el.classList.add("selectionne");
+    if(ancienneSelection.length > 0){ // on déplace
+        if(this == origSelection || origSelection.compareDocumentPosition(this) & Node.DOCUMENT_POSITION_PRECEDING){
+            var inser = "unshift";
+            var suppr = "pop";
+            var suiv = congePrecedent;
         }
-        el = el==this?null:suiv(el);
+        else if(origSelection.compareDocumentPosition(this) & Node.DOCUMENT_POSITION_FOLLOWING){
+            var inser = "push";
+            var suppr = "shift";
+            var suiv = congeSuivant;
+        }
+        else
+            return;
+
+        for(var i = 0; i < selection.length; i++){
+            selection[i].classList.remove("conge");
+            selection[i].classList.remove("selectionne");
+        }
+
+        var diffPos = -1;
+        var el = origSelection;
+        while(el){
+            if(!el.classList.contains("conge"))
+                diffPos += 1;
+            el = el==this?null:suiv(el);
+        }
+
+        selection = ancienneSelection.slice(0);
+
+        for(var i = 0; i < selection.length; i++){
+            selection[i].classList.add("conge");
+            selection[i].classList.add("selectionne");
+        }
+
+        for(; diffPos > 0; diffPos--){
+            var el = selection[0];
+            while(el && el.classList.contains("conge"))
+                el = suiv(el);
+            if(el){
+                selection[inser](el);
+                el.classList.add("conge");
+                el.classList.add("selectionne");
+            }
+
+            el = selection[suppr]()
+            el.classList.remove("conge");
+            el.classList.remove("selectionne");
+        }
+            console.log(selection);
+
+
+    }
+    else{ // nouvelle selection
+        if(origSelection == this || origSelection.compareDocumentPosition(this) & Node.DOCUMENT_POSITION_PRECEDING){
+            var suiv = congePrecedent;
+            var inser = "unshift";
+        }
+        else if(origSelection.compareDocumentPosition(this) & Node.DOCUMENT_POSITION_FOLLOWING){
+            var suiv = congeSuivant;
+            var inser = "push";
+        }
+        else
+            var suiv = function(){return null;};
+        var el = origSelection;
+
+        // ça pourrait être plus propre et ne pas rechercher toute la sélection à chaque fois
+        // mais bon ça tourne raisonnablement vite tel quel
+        for(var i = 0; i < selection.length; i++){
+            selection[i].classList.remove("selectionne");
+        }
+
+        selection = []
+        while(el){
+            switch(filtreSelection(el)){
+                case 0:
+                    el = null;
+                    break;
+                case 1:
+                    selection[inser](el);
+                    el.classList.add("selectionne");
+                case -1:
+                    el = el==this?null:suiv(el);
+            }
+        }
     }
 }
 
@@ -552,9 +619,51 @@ function finSelection(){
         xhr.send(JSON.stringify(conges));
         selection = [];
     }
-    else if(mode_depla = DEPLA_SELEC){
+    else if(modeDepla == DEPLA_SELEC){
     }
-    else{}
+    else{
+        var asupprimer = [];
+        var aajouter = [];
+
+        var trouve;
+
+        for(var i = 0; i < selection.length; i++){
+            trouve = false;
+            for(var j = 0; j < ancienneSelection.length && !trouve; j++)
+                if(selection[i] == ancienneSelection[j])
+                    trouve = true;
+            if(!trouve)
+                aajouter.push({"login": login, "date": jsToPHPDate(selection[i].date), "ts": selection[i].date-0});
+            selection[i].classList.remove("selectionne");
+        }
+
+        for(i = 0; i < ancienneSelection.length; i++){
+            trouve = false;
+            for(j = 0; j < selection.length && !trouve; j++)
+                if(ancienneSelection[i] == selection[j])
+                    trouve = true;
+            if(!trouve)
+                asupprimer.push({"login": login, "date": jsToPHPDate(ancienneSelection[i].date), "ts": ancienneSelection[i].date-0});
+        }
+        document.body.classList.add("charge");
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "conge.json.php?action=inserer", true);
+        xhr.onreadystatechange = function(){
+            if(xhr.readyState >= 4){
+                xhr = new XMLHttpRequest;
+                xhr.open("POST", "conge.json.php?action=supprimer", true);
+                xhr.onreadystatechange = function(){
+                    if(xhr.readyState >= 4)
+                        getConges();
+                }
+                xhr.send(JSON.stringify(asupprimer));
+            }
+        }
+        xhr.send(JSON.stringify(aajouter));
+
+        selection = [];
+        ancienneSelection = [];
+    }
 }
 
 var OUTIL_AJOUT = 0;
