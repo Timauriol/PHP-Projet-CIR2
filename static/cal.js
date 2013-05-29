@@ -458,7 +458,7 @@ function debutSelection(){
             selection[i].classList.remove("selectionne");
         selection = [];
         filtreSelection = function(el){
-            return !el || !el.classList.contains("conge") ? 0 : el.parentElement.parentElement.classList.contains(classe) ? -1 : 1;
+            return !el || !el.classList.contains("conge") ? 0 : el.parentElement.parentElement.classList.contains(classe) ? 1: -1;
         }
     }
     else if(outil == OUTIL_DEPLA && selection.length != 0 && this.classList.contains("selectionne")){
@@ -505,6 +505,7 @@ function congeSuivant(el){
 }
 
 function modifieSelection(){
+    console.log("modifieSelection");
     if(ancienneSelection.length > 0){ // on déplace
         if(this == origSelection || origSelection.compareDocumentPosition(this) & Node.DOCUMENT_POSITION_PRECEDING){
             var inser = "unshift";
@@ -598,6 +599,7 @@ function jsToPHPDate(date){
 }
 
 function finSelection(){
+    console.log("bonjour");
     var polygons = document.querySelectorAll("polygon");
     for(var i = 0; i < polygons.length; i++)
         polygons[i].removeEventListener("mouseover", modifieSelection, false);
