@@ -169,9 +169,11 @@ function recherche(){
     recherche_xhr = new XMLHttpRequest();
     recherche_xhr.open("GET", "utilisateur.json.php?q=" + encodeURIComponent(document.querySelector(".recherche").value), true);
     recherche_xhr.onreadystatechange = function(){
-        if(recherche_xhr.readyState == 4){
+        if(recherche_xhr.readyState >= 4){
             document.querySelector(".recherche").classList.remove("spinner");
-            construireAutocomplete(JSON.parse(recherche_xhr.responseText));
+            if(recherche_xhr.status == 200)
+                construireAutocomplete(JSON.parse(recherche_xhr.responseText));
+
         }
     }
     recherche_xhr.send();
@@ -345,7 +347,7 @@ window.onload = function(){
         changeMode(CAL_GLOBAL);
         rafraichir();
     }, false);
-    document.querySelector("#bouton-util").addEventListener("click", function(){
+    document.querySelector("#bouton-util").addEventListener("click", function(e){
         changeMode(CAL_UTILISATEUR);
         recherche_input.focus();
         recherche_input.select();
@@ -386,7 +388,7 @@ window.onload = function(){
 };
 
 function majHash(){
-    var hash = "";
+    var hash = "#";
     if(window.mode == CAL_UTILISATEUR){
         if(window.login){
             hash += "&l=" + window.login;
@@ -401,7 +403,10 @@ function majHash(){
     if(window.annee){
         hash += "&a=" + window.annee;
     }
-    window.location.hash = hash;
+    if(window.location.hash != hash) // le changement de hash est lent et
+        window.location.hash = hash; // cause des problèmes au niveau de la
+                                     // gestion du focus donc on évite de
+                                     // le faire si ce n'est pas nécessaire
 }
 
 /* http://stackoverflow.com/a/1284335 */
@@ -453,7 +458,7 @@ function debutSelection(){
             selection[i].classList.remove("selectionne");
         selection = [];
         filtreSelection = function(el){
-            return !el || !el.classList.contains("conge") ? 0 : !el.parentElement.parentElement.classList.contains(classe) ? -1 : 1;
+            return !el || !el.classList.contains("conge") ? 0 : el.parentElement.parentElement.classList.contains(classe) ? -1 : 1;
         }
     }
     else if(outil == OUTIL_DEPLA && selection.length != 0 && this.classList.contains("selectionne")){
