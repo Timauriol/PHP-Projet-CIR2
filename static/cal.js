@@ -366,11 +366,11 @@ window.onload = function(){
             if(arg.length == 2){
                 switch(arg[0]){
                     case "n":
-                        document.querySelector(".recherche").value = arg[1];
-                        window.nom_prenom = arg[1];
+                        window.nom_prenom = decodeURIComponent(arg[1]);
+                        document.querySelector(".recherche").value = window.nom_prenom;
                         break;
                     case "l":
-                        window.login = arg[1];
+                        window.login = decodeURIComponent(arg[1]);
                         break;
                     case "m":
                         window.mois = arg[1] - 0;
@@ -391,10 +391,10 @@ function majHash(){
     var hash = "#";
     if(window.mode == CAL_UTILISATEUR){
         if(window.login){
-            hash += "&l=" + window.login;
+            hash += "&l=" + encodeURIComponent(window.login);
         }
         if(window.nom_prenom){
-            hash += "&n=" + window.nom_prenom;
+            hash += "&n=" + encodeURIComponent(window.nom_prenom);
         }
     }
     if(typeof window.mois != "undefined"){
