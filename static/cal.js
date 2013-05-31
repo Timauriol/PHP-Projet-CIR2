@@ -375,7 +375,9 @@ function changeMode(mode){
     }
     else if(mode == CAL_GLOBAL){
         document.querySelector("#bouton-global").classList.add("actif");
-        document.querySelector(".container.init .annee").value = annee;
+        var inputAnnee = document.querySelector(".container.init .annee");
+        inputAnnee.value = annee;
+        inputAnnee.classList.remove("incorrect"); // en théorie, window.annee est toujours un nombre
         verifAnnee();
         window.setTimeout(function(){
             if(window.mode == CAL_GLOBAL){
@@ -774,8 +776,13 @@ function initFormulaireInit(){ // quel nom
     inputAnnee.value = annee;
     verifAnnee();
     inputAnnee.addEventListener("input", function(){
-        window.annee = inputAnnee.value - 0 || 0;
-        window.mois = 0;
+        if(isNaN(inputAnnee.value))
+            inputAnnee.classList.add("incorrect");
+        else{
+            inputAnnee.classList.remove("incorrect");
+            window.annee = inputAnnee.value - 0 || 0;
+            window.mois = 0;
+        }
         verifAnnee();
     } , false);
     var ulConges = init.querySelector("ul.conges");
@@ -820,15 +827,17 @@ function initFormulaireInit(){ // quel nom
 function envoiInit(){
     var init = document.querySelector(".container.init");
     var liconges = init.querySelector("ul.conges");
-    var incorrect = false;
+    var incorrect = init.querySelectorAll(".incorrect");
+    if(incorrect.length > 0){
+        for(var i = 0; i < incorrect.length; i++){
+            incorrect[i].classList.remove("clignote");
+            window.setTimeout(function(c){c.classList.add("clignote")}, 100, incorrect[i]);
+        }
+        return;
+    }
+    if(document.querySelector(".init .avertissement").classList.contains("actif") && !confirm("Vous êtes sur le point d'écraser les congés de l'année " + annee + ". Êtes vous sur de vouloir continuer?")) return;
     var conges = [];
     for(var i = 0; i < liconges.children.length; i++){
-        var conge = liconges.children[i];
-        if(conge.classList.contains("incorrect")){
-            conge.classList.remove("clignote");
-            window.setTimeout(function(c){c.classList.add("clignote")}, 100, conge);
-            incorrect = true;
-        }
         if(!incorrect){
             var argsDebut = conge.querySelector(".debut").value.split("/");
             var date = new Date(window.annee, argsDebut[1] - 1, argsDebut[0]);
@@ -846,9 +855,6 @@ function envoiInit(){
             }
         }
     }
-    if(incorrect || (
-            document.querySelector(".init .avertissement").classList.contains("actif") && !confirm("Vous êtes sur le point d'écraser les congés de l'année " + annee + ". Êtes vous sur de vouloir continuer?")
-        )) return;
 
     this.disabled = true;
     document.body.classList.add("charge");
@@ -863,7 +869,7 @@ function envoiInit(){
             if(xhr.status == 200){
                 var succes = document.createElement("div");
                 succes.classList.add("succes");
-                succes.appendChild(document.createTextNode("Initialisation des congés " + annee + " effectuée avec succès !"));
+                succes.appendChild(document.createTextNode("Initialisation des congés de " + annee + " effectuée avec succès !"));
                 init.appendChild(succes);
                 verifAnnee();
             }

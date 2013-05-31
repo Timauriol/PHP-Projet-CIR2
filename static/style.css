@@ -264,7 +264,7 @@ ul:hover > .utilisateur.actif:hover { background: #def; }
     display: none;
     background: white;
     top: -0.5em;
-    right: 1em;
+    left: 1em;
     padding: 5px;
 }
 
@@ -289,7 +289,7 @@ ul:hover > .utilisateur.actif:hover { background: #def; }
     100%{ opacity: 1; }
 }
 
-.init ul.conges li.clignote{
+.clignote{
     animation: clignote 0.5s;
 }
 
