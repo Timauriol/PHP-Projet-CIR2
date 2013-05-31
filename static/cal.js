@@ -223,6 +223,7 @@ function construireUtilAutocomplete(u, i){
         document.querySelector(".container.cal").style.opacity = 0;
         clearConges();
         getConges();
+        rafraichir();
         majHash();
     }
     li.addEventListener("mousedown", choix, false);
@@ -808,6 +809,13 @@ function initFormulaireInit(){ // quel nom
         }, false);
         conge.appendChild(suppr);
         ulConges.appendChild(conge);
+    }, false);
+
+    init.querySelector("input.solde").addEventListener("input", function(){
+        if(isNaN(this.value))
+            this.classList.add("incorrect");
+        else
+            this.classList.remove("incorrect");
     }, false);
 
     var envoi = init.querySelector(".envoi");

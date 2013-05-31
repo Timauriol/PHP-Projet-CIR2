@@ -316,3 +316,11 @@ ul:hover > .utilisateur.actif:hover { background: #def; }
     color: white;
     background: #3ac;
 }
+
+input.incorrect {
+    background: #fcc;
+}
+
+.connexion {
+    text-align: center;
+}

@@ -23,7 +23,7 @@ if(isset($_SESSION["conge_login"]) && $_SESSION["conge_login"] != "")
 
 include("_head.php");
 
-echo("<h1>Connexion</h1>");
+echo("<div class=\"connexion\"><h1>Connexion</h1>");
 
 
 if($error != "")
@@ -35,6 +35,7 @@ if($error != "")
     <input type="password" name="mdp" placeholder="Mot de passe"/><br/>
     <input type="submit" value="Se connecter"/>
 </form>
+</div>
 
 <?php
 include("_tail.php");
