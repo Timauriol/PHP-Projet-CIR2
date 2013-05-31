@@ -71,8 +71,10 @@ class Utilisateur{
         $req = $db->prepare("SELECT login, nom_prenom, admin FROM utilisateur");
         if(!$req->execute()) die("Problème de connexion à la base MySQL");
         $tous = array();
-        while($res = $req->fetch())
-            array_push($tous, new Utilisateur($res[0], $res[1], $res[2]));
+        while($res = $req->fetch()){
+            $u = new Utilisateur($res[0], $res[1], $res[2]);
+            array_push($tous, $u);
+        }
         return $tous;
     }
 
@@ -120,8 +122,10 @@ class Utilisateur{
         $res = $req->execute();
 
         $utilisateurs = array();
-        while($res = $req->fetch())
-            array_push($utilisateurs, new Utilisateur($res[0], $res[1], $res[2]));
+        while($res = $req->fetch()){
+            $u = new Utilisateur($res[0], $res[1], $res[2]);
+            array_push($utilisateurs, $u);
+        }
         return $utilisateurs;
     }
 }

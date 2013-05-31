@@ -21,11 +21,14 @@ function ferie($date){
     ) return true;
     $tspaques = easter_date($date->format("Y"));
     $jferie = DateTime::createFromFormat("U", $tspaques);
-    $jferie->add(new DateInterval("P1D")); // lundi de pâques
+    $di = new DateInterval("P1D");
+    $jferie->add($di); // lundi de pâques
     if($jour == $jferie->format("j") && $mois == $jferie->format("n")) return true;
-    $jferie->add(new DateInterval("P38D")); // jeudi de l'ascension
+    $di = new DateInterval("P38D");
+    $jferie->add($di); // jeudi de l'ascension
     if($jour == $jferie->format("j") && $mois == $jferie->format("n")) return true;
-    $jferie->add(new DateInterval("P11D")); // lundi de la pentecôte
+    $di = new DateInterval("P11D");
+    $jferie->add($di); // lundi de la pentecôte
     if($jour == $jferie->format("j") && $mois == $jferie->format("n")) return true;
 
     return false;

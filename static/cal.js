@@ -842,7 +842,9 @@ function envoiInit(){
             }
         }
     }
-    if(incorrect) return;
+    if(incorrect || (
+            document.querySelector(".init .avertissement").classList.contains("actif") && !confirm("Vous êtes sur le point d'écraser les congés de l'année " + annee + ". Êtes vous sur de vouloir continuer?")
+        )) return;
 
     this.disabled = true;
     document.body.classList.add("charge");

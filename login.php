@@ -10,7 +10,7 @@ if(isset($_POST["login"]) && isset($_POST["mdp"])){
     $req->bindParam(':login', $_POST["login"]);
     $req->bindParam(':mdp', $_POST["mdp"]);
 
-    if(!$req->execute()) die("Problème de connexion à la base MySQL");
+    $req->execute();
 
     if($req->rowCount() == 0) $error = "Login ou mot de passe erroné.";
     else if($req->fetch()["admin"] != "1") $error = "Vous n'avez pas les droits d'accès à la console administrateur.";

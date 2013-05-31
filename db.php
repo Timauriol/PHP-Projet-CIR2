@@ -11,6 +11,6 @@ try
     $db = new PDO($SQL_DSN, $SQL_USER, $SQL_PASS, $options);
 }
 catch (PDOException $e) {
-  die("Echec : " . $e->getMessage());
+  echo("Echec : " . $e->getMessage());
 }
 ?>

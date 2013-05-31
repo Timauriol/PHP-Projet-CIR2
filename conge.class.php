@@ -7,7 +7,6 @@ class Conge{
     public $date;
     public $type;
     function __construct($date, $login, $type = null){
-        if(!is_string($login) || !is_string($date)) die("Paramètres incorrects pour Conge()");
         $this->login = $login;
         $this->date = $date;
         if($type)
@@ -75,8 +74,10 @@ class Conge{
 
         $conges = array();
 
-        while($res = $req->fetch())
-            array_push($conges, new Conge($res[0], $res[1], $res[2]));
+        while($res = $req->fetch()){
+            $c = new Conge($res[0], $res[1], $res[2]);
+            array_push($conges, $c);
+        }
 
         return $conges;
     }

@@ -5,6 +5,13 @@ include_once("utilisateur.class.php");
 
 session_start();
 
+if(!isset($_SESSION["conge_login"]) || $_SESSION["conge_login"] === ""){
+    $u = new Utilisateur($_SESSION["conge_login"]);
+    if($u->login === ""){
+        header("HTTP/1.1 403 Forbidden");
+        die("[]");
+    }
+}
 if(!isset($_SESSION["conge_login"]) || $_SESSION["conge_login"] === "" || (new Utilisateur($_SESSION["conge_login"]))->login === ""){
     header("HTTP/1.1 403 Forbidden");
     die();
@@ -34,7 +41,8 @@ Utilisateur::setSoldeTous($post["solde"], $annee);
 
 foreach($utilisateurs as $u){
     $query = "INSERT INTO conges (login, date, type) VALUES ";
-    $date = new DateTime($annee . "-01-01", new DateTimeZone("Europe/Paris"));
+    $tz = new DateTimeZone("Europe/Paris");
+    $date = new DateTime($annee . "-01-01", $tz);
     while($date->format("Y") == $annee){
         if(ferie($date))
             $query .= "(:login, '" . $date->format("Y-m-d H:i:s") . "', 'ferie'),";
@@ -45,7 +53,7 @@ foreach($utilisateurs as $u){
     $query = substr($query, 0, -1); // on enlève la virgule en trop
     $req = $db->prepare($query);
     $req->bindValue(":login", $u->login);
-    if(!$req->execute()) die("oh no");
+    $req->execute();
 
     $conges = array();
     foreach($post['conges'] as $conge){
