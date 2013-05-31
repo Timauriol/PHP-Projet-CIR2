@@ -15,7 +15,7 @@ function joursDansMois(mois, annee){
         return jours[mois];
 }
 
-var paques = {}
+var paques = {};
 
 function ferie(annee, mois, jour){
     if(
@@ -857,7 +857,10 @@ function envoiInit(){
         if(xhr.readyState >= 4){
             document.body.classList.remove("charge");
             if(xhr.status == 200){
-                init.appendChild(document.createTextNode("OK!"));
+                var succes = document.createElement("div");
+                succes.classList.add("succes");
+                succes.appendChild(document.createTextNode("Initialisation des congés " + annee + " effectuée avec succès !"));
+                init.appendChild(succes);
             }
             var envoi = init.querySelector(".envoi")
             envoi.disabled = false;

@@ -220,6 +220,15 @@ ul:hover > .utilisateur.actif:hover { background: #def; }
 .init > table {
     border-collapse: collapse;
     margin: 30px auto;
+    table-layout: fixed;
+}
+
+.init input {
+    max-width: 50px;
+}
+
+.init col {
+    width: 50%;
 }
 
 .init td { padding: 5px 15px; }
@@ -254,7 +263,7 @@ ul:hover > .utilisateur.actif:hover { background: #def; }
     display: none;
     background: white;
     top: -0.5em;
-    left: 1em;
+    right: 1em;
     padding: 5px;
 }
 
@@ -323,4 +332,17 @@ input.incorrect {
 
 .connexion {
     text-align: center;
+}
+
+.init button img {
+    padding-left: 6px;
+}
+
+.init .succes {
+    background: #bfb;
+    border: 1px solid #3a3;
+    padding: 5px;
+}
+.init .succes::before {
+    content: "✓ "
 }
