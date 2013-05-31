@@ -21,23 +21,25 @@ if(isset($_POST["login"]) && isset($_POST["mdp"])){
 
 if(isset($_SESSION["conge_login"]) && $_SESSION["conge_login"] != "")
     redirect();
+else {
 
-include_once("_head.php");
+    include_once("_head.php");
 
-echo("<div class=\"connexion\"><h1>Connexion</h1>");
+    echo("<div class=\"connexion\"><h1>Connexion</h1>");
 
 
-if($error != "")
-    echo('<div class="error">' . $error . '</div>');
-?>
+    if($error != "")
+        echo('<div class="error">' . $error . '</div>');
+    ?>
 
-<form method="POST">
-    <input type="text" name="login" placeholder="Login"/><br/>
-    <input type="password" name="mdp" placeholder="Mot de passe"/><br/>
-    <input type="submit" value="Se connecter"/>
-</form>
-</div>
+    <form method="POST">
+        <input type="text" name="login" placeholder="Login"/><br/>
+        <input type="password" name="mdp" placeholder="Mot de passe"/><br/>
+        <input type="submit" value="Se connecter"/>
+    </form>
+    </div>
 
-<?php
-include_once("_tail.php");
-?>
+    <?php
+    include_once("_tail.php");
+}
+    ?>
