@@ -3,19 +3,12 @@ include_once("db.php");
 include_once("outils.php");
 include_once("utilisateur.class.php");
 
-session_start(); // initialise $_SESSION
-
-if(!isset($_SESSION["conge_login"]) || $_SESSION["conge_login"] == "")
-    redirect("login.php"); // l'utilisateur n'est pas connecté, on redirige
-
-$user = new Utilisateur($_SESSION["conge_login"]);
-
-if($user->login == ""){
-    $_SESSION["conge_login"] = "";
-    redirect("login.php"); // l'utilisateur n'existe pas
+if(!estConnecte()){
+    $_SESSION["conges_login"] = "";
+    redirect("login.php");
 }
 
-include("_head.php");
+include_once("_head.php");
 ?>
 <nav>
     <ul>
@@ -104,6 +97,6 @@ for($ligne = 0; $ligne < 6; $ligne++){
 <script src="static/cal.js"></script>
 
 <?php
-include("_tail.php");
+include_once("_tail.php");
 
 ?>

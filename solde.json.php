@@ -2,28 +2,29 @@
 include_once("db.php");
 include_once("utilisateur.class.php");
 
-session_start();
-
 header("Content-Type: application/json");
 
-if(!isset($_SESSION["conge_login"]) || $_SESSION["conge_login"] === "" || (new Utilisateur($_SESSION["conge_login"]))->login === ""){
+if(!estConnecte()){
     header("HTTP/1.1 403 Forbidden");
-    die("{}");
+    echo("{}");
 }
+else if(!isset($_GET["login"]) || !isset($_GET["annee"]))
+    echo("{}");
+else {
+    $annee = $_GET["annee"];
+    $u = new Utilisateur($_GET["login"]);
 
-if(!isset($_GET["login"]) || !isset($_GET["annee"]))
-    die("{}");
+    if($u->login == ""){
+        echo("{}");
+    } else {
+        if(isset($_POST["changement"]))
+            $u->editSolde($_POST["changement"], $annee);
 
-$annee = $_GET["annee"];
-$u = new Utilisateur($_GET["login"]);
+        $solde = $u->getSolde($annee);
 
-if($u->login == "")
-    die("{}");
-
-if(isset($_POST["changement"]))
-    $u->editSolde($_POST["changement"], $annee);
-
-$solde = $u->getSolde($annee);
-
+        ?>
+        {"solde": <?=$solde?>}
+<?php
+    }
+}
 ?>
-{"solde": <?=$solde?>}

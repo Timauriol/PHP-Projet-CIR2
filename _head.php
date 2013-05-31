@@ -1,5 +1,5 @@
 <?php
-include("config.php");
+include_once("config.php");
 header("Content-Type: text/html; charset=UTF-8");
 ?>
 <!doctype html>

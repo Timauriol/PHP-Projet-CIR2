@@ -23,17 +23,17 @@ class Conge{
 
     }
     public function supprimer(){
-        global $db;
+        $db = DB::getInstance()->getPdo();
         $req = $db->prepare("DELETE FROM conges WHERE date = ? AND login = ?");
         $req->execute(array($this->date, $this->login));
     }
     public function inserer(){
-        global $db;
+        $db = DB::getInstance()->getPdo();
         $req = $db->prepare("INSERT INTO conges (date, login, type) VALUES (?, ?, ?)");
         $req->execute(array($this->date, $this->login, $this->type));
     }
     public static function insererListe($conges){
-        global $db;
+        $db = DB::getInstance()->getPdo();
         $query = "INSERT INTO conges (date, login, type) VALUES ";
         $args = array();
         foreach($conges as $conge){
@@ -48,7 +48,7 @@ class Conge{
     }
     public static function liste($login = null, $date_debut = null, $date_fin = null, $limite = null, $type = null){
         // les dates sont attendues sous format ISO : 2000-12-31 (ou 2000-12-31 23:59)
-        global $db;
+        $db = DB::getInstance()->getPdo();
         $query = "SELECT date, login, type FROM conges WHERE 1=1";
         $args = array();
         if($login){

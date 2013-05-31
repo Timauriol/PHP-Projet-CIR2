@@ -21,7 +21,7 @@ if(isset($_POST["login"]) && isset($_POST["mdp"])){
 if(isset($_SESSION["conge_login"]) && $_SESSION["conge_login"] != "")
     redirect();
 
-include("_head.php");
+include_once("_head.php");
 
 echo("<div class=\"connexion\"><h1>Connexion</h1>");
 
@@ -38,5 +38,5 @@ if($error != "")
 </div>
 
 <?php
-include("_tail.php");
+include_once("_tail.php");
 ?>
