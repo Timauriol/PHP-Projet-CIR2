@@ -1,4 +1,8 @@
 <?php
+/*
+permet de récupérer une liste de congés en format JSON (GET)
+ou d'envoyer une liste de congés en JSON à insérer ou supprimer (POST)
+*/
 include_once("db.class.php");
 include_once("utilisateur.class.php");
 include_once("outils.php");

@@ -1,4 +1,7 @@
 <?php
+/*
+recoit une année et une liste de congés, et initialise cette année avec ceux-ci
+*/
 include_once("db.class.php");
 include_once("outils.php");
 include_once("utilisateur.class.php");

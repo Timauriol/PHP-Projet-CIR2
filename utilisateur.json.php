@@ -1,4 +1,7 @@
 <?php
+/*
+permet de récupérer une liste d'utilisateurs à partir d'une chaîne de caractères de recherche
+ */
 include_once("outils.php");
 
 header("Content-Type: application/json");
