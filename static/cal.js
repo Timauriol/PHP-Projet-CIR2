@@ -195,11 +195,13 @@ function recherche(){
 }
 
 function montrerAutocomplete(){
+    document.addEventListener("click", cacherAutocomplete, false); // évite certains cas extrèmes
     document.querySelector(".autocomplete").style.display = "block";
 }
 
 function cacherAutocomplete(){
     document.querySelector(".autocomplete").style.display = "none";
+    document.removeEventListener("click", cacherAutocomplete, false);
 }
 
 function construireUtilAutocomplete(u, i){
@@ -404,6 +406,8 @@ window.onload = function(){
         changeMode(CAL_UTILISATEUR);
         recherche_input.focus();
         recherche_input.select();
+        montrerAutocomplete();
+        e.cancelBubble = true;
         rafraichir();
     }, false);
     recherche_input.addEventListener("click", function(e){

@@ -13,7 +13,7 @@ else {
     ?>
     <nav>
         <ul>
-            <li id="bouton-global"><a>Congés partagés</a>
+            <li id="bouton-global"><a>Initialisation des congés partagés</a>
             </li>
             <li id="bouton-util"><a>Gestion des congés par employé</a>
                 <input type="text" class="recherche" placeholder="Nom ou login"/>

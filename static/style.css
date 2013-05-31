@@ -126,6 +126,7 @@ div.barre-outils {
 }
 .container {
     opacity: 0;
+    display: none;
     transition: opacity .1s ease-out;
     padding: 0 5%;
     margin: 0 auto;
@@ -300,7 +301,7 @@ ul:hover > .utilisateur.actif:hover { background: #def; }
     min-width: 150px;
     text-align: right;
     position: relative;
-    z-index: 48309403280;
+    z-index: 15;
 }
 .menu {
     background: #eee;
@@ -313,7 +314,7 @@ ul:hover > .utilisateur.actif:hover { background: #def; }
     box-shadow: 0 0 1px black;
     border-radius: 2px;
     display: block;
-    z-index: 48309403280;
+    z-index: 15;
 }
 
 .menu li {
