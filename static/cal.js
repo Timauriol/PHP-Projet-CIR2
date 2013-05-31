@@ -732,7 +732,7 @@ var outil = null;
 
 function verifAnnee(){
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "conge.json.php?limite=1&date_debut=" + annee + "-01-01&date_fin=" + annee + "-12-31%2012:00", true);
+    xhr.open("GET", "conge.json.php?type=conge&limite=1&date_debut=" + annee + "-01-01&date_fin=" + annee + "-12-31%2012:00", true);
     xhr.onreadystatechange = function(){
         if(xhr.readyState >= 4 && xhr.status == 200){
             if(JSON.parse(xhr.responseText).length > 0)
