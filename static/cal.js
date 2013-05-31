@@ -133,7 +133,6 @@ function majSolde(){
     xhr.open("GET", "solde.json.php?login=" + encodeURIComponent(login) + "&annee=" + annee, true);
     xhr.onreadystatechange = function(){
         if(xhr.readyState >= 4 && xhr.status == 200){
-            console.log(xhr.responseText);
             var divsolde = document.querySelector(".container.cal .solde");
             divsolde.innerHTML = "";
             divsolde.appendChild(document.createTextNode("Solde de demi-journées de congé : " + JSON.parse(xhr.responseText).solde));
@@ -303,21 +302,17 @@ function initNavCalendrier(){
 
 function ouvrirSelecteurMois(){
     var selecteur = this;
-    console.log(this);
     var menu = document.createElement("ul");
     menu.classList.add("menu");
     function fermer(e){
-        console.log("bite 8====D");
         selecteur.removeChild(menu);
         document.body.removeEventListener("click", fermer, false);
     }
     var date = new Date(annee, 0, 1);
     for(;date.getFullYear() == annee; date.setMonth(date.getMonth() + 1)){
-        console.log("HI :3");
         var mois = document.createElement("li");
         mois.mois = date.getMonth();
         mois.addEventListener("click", function(e){
-            console.log(this.mois);
             changeMois(annee, this.mois);
             rafraichir();
             e.cancelBubble = true;
@@ -565,7 +560,6 @@ function congeSuivant(el){
 }
 
 function modifieSelection(){
-    console.log("modifieSelection");
     if(ancienneSelection.length > 0){ // on déplace
         if(this == origSelection || origSelection.compareDocumentPosition(this) & Node.DOCUMENT_POSITION_PRECEDING){
             var inser = "unshift";
@@ -614,8 +608,6 @@ function modifieSelection(){
             el.classList.remove("conge");
             el.classList.remove("selectionne");
         }
-            console.log(selection);
-
 
     }
     else{ // nouvelle selection
@@ -659,7 +651,6 @@ function jsToPHPDate(date){
 }
 
 function finSelection(){
-    console.log("bonjour");
     var polygons = document.querySelectorAll("polygon");
     for(var i = 0; i < polygons.length; i++)
         polygons[i].removeEventListener("mouseover", modifieSelection, false);
@@ -829,8 +820,6 @@ function envoiInit(){
     var conges = [];
     for(var i = 0; i < liconges.children.length; i++){
         var conge = liconges.children[i];
-        console.log(liconges.children.length);
-        console.log(conge);
         if(conge.classList.contains("incorrect")){
             conge.classList.remove("clignote");
             window.setTimeout(function(c){c.classList.add("clignote")}, 100, conge);
@@ -841,7 +830,6 @@ function envoiInit(){
             var date = new Date(window.annee, argsDebut[1] - 1, argsDebut[0]);
             var argsFin = conge.querySelector(".fin").value.split("/");
             var dateFin = new Date(window.annee, argsFin[1] - 1, argsFin[0], 12);
-            console.log(date, dateFin);
             while(date-0 <= dateFin-0){
                 if(date.getDay() != 0 && date.getDay() != 6 && !ferie(annee, date.getMonth(), date.getDate())){ // on filtre les week-ends et feriés
                     var trouve = false;
@@ -854,7 +842,6 @@ function envoiInit(){
             }
         }
     }
-    console.log(conges);
     if(incorrect) return;
 
     this.disabled = true;
