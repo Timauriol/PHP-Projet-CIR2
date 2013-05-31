@@ -19,10 +19,9 @@ include("_head.php");
 ?>
 <nav>
     <ul>
-        <li id="bouton-global"><a>Calendrier global</a>
-            <input type="text" class="annee" placeholder="Année"/>
+        <li id="bouton-global"><a>Congés partagés</a>
         </li>
-        <li id="bouton-util"><a>Calendrier employé</a>
+        <li id="bouton-util"><a>Gestion des congés par employé</a>
             <input type="text" class="recherche" placeholder="Nom ou login"/>
             <ul class="autocomplete">
             </ul>
@@ -31,7 +30,33 @@ include("_head.php");
     </ul>
 </nav>
 
-<div class="container">
+<div class="container init">
+<table>
+<col/><col/>
+<tr>
+    <td>Année civile</td><td><input type="text" class="annee">
+        <div class="avertissement">⚠ <span class="reste">Il existe déjà des congés cette année. Ils seront écrasés lorsque vous enregistrerez. Cette opération est irréversible.</span></div>
+    </td>
+</tr>
+<tr>
+    <td>Congés</td><td>
+        <ul class="conges"></ul>
+        <a class="ajout-periode"><span>+</span> Ajouter une periode de congés</a>
+    </td>
+</tr>
+<tr>
+    <td>Demi-journées de congé mobiles</td><td><input type="text" class="solde" value=4></td>
+</tr>
+<tr>
+    <td></td><td><button class="envoi">Envoyer</button></td>
+</tr>
+</table>
+</div>
+
+
+
+
+<div class="container cal">
 
 <div class="barre-outils">
 <div class="bouton ajout" title="Ajouter"><img src="static/plus.png"/></div>
@@ -39,7 +64,8 @@ include("_head.php");
 <div class="bouton suppression" title="Supprimer"><img src="static/suppr.png"></div>
 <div class="bouton mois-suivant" title="Mois suivant"><img src="static/suiv.png"></div>
 <div class="bouton mois-precedent" title="Mois précédent"><img src="static/prec.png"></div>
-<div class="bouton selecteur-mois"><span class="date">Janvier 1985</span> <img src="static/menu.png"></div>
+<div class="bouton selecteur-mois"><span class="date">Janvier 1985</span><!-- <img src="static/menu.png">--></div>
+<div class="solde"></div>
 <div style="clear:both;"></div>
 </div>
 <table class="jours">

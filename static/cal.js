@@ -65,10 +65,6 @@ function changeMois(annee, mois){
 
     clearConges();
 
-    var span_date = document.querySelector(".selecteur-mois .date");
-    span_date.innerHTML = "";
-    span_date.appendChild(document.createTextNode(nomMois(mois) + " " + annee));
-
     var date = datePremiereCase();
 
     for(var y = 0; y < 6; y++){
@@ -115,18 +111,34 @@ function getConges(){
             "-" + ((date.getMonth() + 1)%12 + 1) +
             "-14" + // cas extrème : Février commence un Lundi, on veut les 6 premiers jours de Mars
 
-            "&login=" + login
+            "&login=" + encodeURIComponent(login)
             , true);
     xhr.onreadystatechange = function(){
         if(xhr.readyState == 4){
             if(xhr.status != 200){
                 alert("Une erreur est survenue lors de la récupération des congés.");
             }
-            else
+            else {
                 remplirConges(JSON.parse(xhr.responseText));
+                majSolde();
+            }
         }
     }
     document.body.classList.add("charge");
+    xhr.send();
+}
+
+function majSolde(){
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "solde.json.php?login=" + encodeURIComponent(login) + "&annee=" + annee, true);
+    xhr.onreadystatechange = function(){
+        if(xhr.readyState >= 4 && xhr.status == 200){
+            console.log(xhr.responseText);
+            var divsolde = document.querySelector(".container.cal .solde");
+            divsolde.innerHTML = "";
+            divsolde.appendChild(document.createTextNode("Solde de demi-journées de congé : " + JSON.parse(xhr.responseText).solde));
+        }
+    }
     xhr.send();
 }
 
@@ -157,7 +169,7 @@ function remplirConges(conges){
             date.setDate(date.getDate()+1);
         }
     }
-    document.querySelector(".container").style.opacity = 1;
+    document.querySelector(".container.cal").style.opacity = 1;
     document.body.classList.remove("charge");
 }
 
@@ -208,7 +220,7 @@ function construireUtilAutocomplete(u, i){
         window.nom_prenom = u.nom_prenom;
         recherche.blur();
         window.login = u.login;
-        document.querySelector(".container").style.opacity = 0;
+        document.querySelector(".container.cal").style.opacity = 0;
         clearConges();
         getConges();
         majHash();
@@ -293,6 +305,9 @@ function initNavCalendrier(){
 function rafraichir(){
     if(window.mode == CAL_UTILISATEUR && window.login){
         getConges();
+        var span_date = document.querySelector(".selecteur-mois .date");
+        span_date.innerHTML = "";
+        span_date.appendChild(document.createTextNode(nomMois(mois) + " " + annee));
     }
     else{
         // d'autres trucs
@@ -321,16 +336,28 @@ function changeMode(mode){
     window.mode = mode;
     var actif = document.querySelector("nav .actif");
     if(actif) actif.classList.remove("actif")
-    document.querySelector(".container").style.opacity = 0;
+    document.querySelector(".container.init").style.opacity = 0;
+    document.querySelector(".container.cal").style.opacity = 0;
     clearConges();
+    majHash();
     if(mode == CAL_UTILISATEUR){
         document.querySelector("#bouton-util").classList.add("actif");
+        document.querySelector(".container.init").style.display = "none";
+        document.querySelector(".container.cal").style.display = "block";
+        changeMois(annee, mois);
     }
     else if(mode == CAL_GLOBAL){
         document.querySelector("#bouton-global").classList.add("actif");
-        cacherAutocomplete();
+        document.querySelector(".container.init .annee").value = annee;
+        verifAnnee();
+        window.setTimeout(function(){
+            if(window.mode == CAL_GLOBAL){
+                document.querySelector(".container.cal").style.display = "none";
+                document.querySelector(".container.init").style.display = "block";
+                document.querySelector(".container.init").style.opacity = 1;
+            }
+        }, 100, false);
     }
-    majHash();
 }
 
 window.onload = function(){
@@ -344,6 +371,7 @@ window.onload = function(){
     recherche_input.addEventListener("input", recherche, false);
     recherche_input.addEventListener("keydown", navigationAutocomplete, false);
     document.querySelector("#bouton-global").addEventListener("click", function(){
+        cacherAutocomplete();
         changeMode(CAL_GLOBAL);
         rafraichir();
     }, false);
@@ -383,6 +411,7 @@ window.onload = function(){
         }
     }
     changeMois(window.annee, window.mois);
+    initFormulaireInit();
     if(window.login) changeMode(CAL_UTILISATEUR);
     rafraichir();
 };
@@ -396,12 +425,12 @@ function majHash(){
         if(window.nom_prenom){
             hash += "&n=" + encodeURIComponent(window.nom_prenom);
         }
-    }
-    if(typeof window.mois != "undefined"){
-        hash += "&m=" + window.mois;
-    }
-    if(window.annee){
-        hash += "&a=" + window.annee;
+        if(typeof window.mois != "undefined"){
+            hash += "&m=" + window.mois;
+        }
+        if(window.annee){
+            hash += "&a=" + window.annee;
+        }
     }
     if(window.location.hash != hash) // le changement de hash est lent et
         window.location.hash = hash; // cause des problèmes au niveau de la
@@ -678,3 +707,140 @@ var OUTIL_SUPPR = 1;
 var OUTIL_DEPLA = 2;
 
 var outil = null;
+
+function verifAnnee(){
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "conge.json.php?limite=1&date_debut=" + annee + "-01-01&date_fin=" + annee + "-12-31%2012:00", true);
+    xhr.onreadystatechange = function(){
+        if(xhr.readyState >= 4 && xhr.status == 200){
+            if(JSON.parse(xhr.responseText).length > 0)
+                document.querySelector(".init .avertissement").classList.add("actif");
+            else
+                document.querySelector(".init .avertissement").classList.remove("actif");
+        }
+    }
+    xhr.send();
+}
+
+function verifDate(){
+    var li = this.parentElement;
+    var debut = li.querySelector(".debut").value.split("/");
+    var fin = li.querySelector(".fin").value.split("/");
+    if(debut.length != 2 || fin.length != 2){
+        li.classList.add("incorrect");
+        return;
+    }
+    var debutJour = debut[0] - 0;
+    var debutMois = debut[1] - 0;
+    var finJour = fin[0] - 0;
+    var finMois = fin[1] - 0;
+    if(debutMois <= 12 && debutMois > 0 && debutJour <= joursDansMois(debutMois-1) && debutJour > 0 &&
+        finMois <= 12 && finMois > 0 && finJour <= joursDansMois(finMois-1) && finJour > 0 &&
+        (debutMois < finMois || (debutMois == finMois && debutJour <= finJour)))
+        li.classList.remove("incorrect");
+    else
+        li.classList.add("incorrect");
+}
+
+function initFormulaireInit(){ // quel nom
+    var init = document.querySelector(".container.init");
+    var inputAnnee = init.querySelector(".annee");
+    inputAnnee.value = annee;
+    verifAnnee();
+    inputAnnee.addEventListener("input", function(){
+        window.annee = inputAnnee.value - 0 || 0;
+        window.mois = 0;
+        verifAnnee();
+    } , false);
+    var ulConges = init.querySelector("ul.conges");
+    var ajoutPeriode = init.querySelector("a.ajout-periode");
+    ajoutPeriode.addEventListener("click", function(){
+        var conge = document.createElement("li");
+        conge.classList.add("incorrect"); // bah oui il est vide
+        var debut = document.createElement("input");
+        var fin = document.createElement("input");
+        debut.type = "text";
+        fin.type = "text";
+        debut.className = "debut";
+        fin.className = "fin";
+        debut.placeholder = "JJ/MM";
+        fin.placeholder = "JJ/MM";
+        conge.appendChild(debut);
+        conge.appendChild(document.createTextNode(" - "));
+        conge.appendChild(fin);
+        debut.addEventListener("input", verifDate, false);
+        fin.addEventListener("input", verifDate, false);
+        var suppr = document.createElement("a");
+        suppr.classList.add("suppr");
+        suppr.appendChild(document.createTextNode(" ✗"));
+        suppr.addEventListener("click", function(){
+            conge.parentElement.removeChild(conge);
+        }, false);
+        conge.appendChild(suppr);
+        ulConges.appendChild(conge);
+    }, false);
+
+    var envoi = init.querySelector(".envoi");
+    envoi.addEventListener("click", envoiInit, false);
+}
+
+function envoiInit(){
+    var init = document.querySelector(".container.init");
+    var liconges = init.querySelector("ul.conges");
+    var incorrect = false;
+    var conges = [];
+    for(var i = 0; i < liconges.children.length; i++){
+        var conge = liconges.children[i];
+        console.log(liconges.children.length);
+        console.log(conge);
+        if(conge.classList.contains("incorrect")){
+            conge.classList.remove("clignote");
+            window.setTimeout(function(c){c.classList.add("clignote")}, 100, conge);
+            incorrect = true;
+        }
+        if(!incorrect){
+            var argsDebut = conge.querySelector(".debut").value.split("/");
+            var date = new Date(window.annee, argsDebut[1] - 1, argsDebut[0]);
+            var argsFin = conge.querySelector(".fin").value.split("/");
+            var dateFin = new Date(window.annee, argsFin[1] - 1, argsFin[0], 12);
+            console.log(date, dateFin);
+            while(date-0 <= dateFin-0){
+                if(date.getDay() != 0 && date.getDay() != 6 && !ferie(annee, date.getMonth(), date.getDate())){ // on filtre les week-ends et feriés
+                    var trouve = false;
+                    for(var j = 0; j < conges.length; j++)
+                        if(conges[j].ts == date - 0) trouve = true;
+                    if(!trouve)
+                        conges.push({"date": jsToPHPDate(date), "ts": date-0});
+                }
+                date.setHours(date.getHours() + 12);
+            }
+        }
+    }
+    console.log(conges);
+    if(incorrect) return;
+
+    this.disabled = true;
+    document.body.classList.add("charge");
+    var spinner = new Image();
+    spinner.src = "static/spinner.gif";
+    this.appendChild(spinner);
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "remplissage.json.php", true);
+    xhr.onreadystatechange = function(){
+        if(xhr.readyState >= 4){
+            document.body.classList.remove("charge");
+            if(xhr.status == 200){
+                init.appendChild(document.createTextNode("OK!"));
+            }
+            var envoi = init.querySelector(".envoi")
+            envoi.disabled = false;
+            envoi.removeChild(envoi.querySelector("img"));
+
+        }
+    }
+    xhr.send(JSON.stringify({
+                    "solde": init.querySelector(".solde").value - 0,
+                    "annee": window.annee,
+                    "conges": conges
+                }));
+}

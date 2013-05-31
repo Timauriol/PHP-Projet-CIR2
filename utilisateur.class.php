@@ -13,7 +13,7 @@ class Utilisateur{
            utile si l'on récupère plusieurs utilisateurs dans une même requète */
         if(!$nom_prenom || !$admin){
             $req = $db->prepare("SELECT nom_prenom, admin FROM utilisateur WHERE login = :login");
-            $req->bindParam(':login', $login);
+            $req->bindValue(':login', $login);
             if(!$req->execute()) die("Problème de connexion à la base MySQL");
             $res = $req->fetch();
             if(!$res) // l'utilisateur n'existe pas
@@ -29,6 +29,42 @@ class Utilisateur{
         }
     }
 
+
+    public function getSolde($annee){
+        global $db;
+        $req = $db->prepare("SELECT solde FROM solde WHERE login = ? AND annee = ?");
+        $req->execute(array($this->login, $annee));
+        $res = $req->fetch();
+        if(!$res){
+            $req = $db->prepare("INSERT INTO solde (solde, login, annee) values (0,?,?)");
+            $req->execute(array($this->login, $annee));
+            return 0;
+        }
+        else{
+            return $res[0];
+        }
+    }
+
+    public static function staticEditSolde($login, $modif, $annee){ // relatif, ie. $u->setSolde(-1, 2013) pour réduire le solde de 1
+        global $db;
+        $req = $db->prepare("UPDATE solde SET solde = solde + ? WHERE login = ? AND annee = ?");
+        $req->bindValue(1, $modif);
+        $req->bindValue(2, $login);
+        $req->bindValue(3, $annee, PDO::PARAM_INT);
+        $req->execute();
+        if($req->rowCount() == 0){
+            $req = $db->prepare("INSERT INTO solde (solde, login, annee) values (?,?,?)");
+            $req->bindValue(1, $modif);
+            $req->bindValue(2, $login);
+            $req->bindValue(3, $annee, PDO::PARAM_INT);
+            $req->execute();
+        }
+    }
+
+    public function editSolde($modif, $annee){
+        Utilisateur::staticEditSolde($this->login, $modif, $annee);
+    }
+
     public static function tous(){
         // renvoie un Array de tous les utilisateurs
         global $db;
@@ -39,6 +75,26 @@ class Utilisateur{
             array_push($tous, new Utilisateur($res[0], $res[1], $res[2]));
         return $tous;
     }
+
+    public static function setSoldeTous($solde, $annee){
+        global $db;
+        $req = $db->prepare("DELETE FROM solde WHERE annee = ?");
+        $req->execute(array($annee));
+        $query = "INSERT INTO solde (solde, login, annee) VALUES ";
+        $tous = Utilisateur::tous();
+        $vars = array();
+        foreach($tous as $u){
+            $query .= "(?, ?, ?),";
+            array_push($vars, $solde, $u->login, $annee);
+        }
+        $query = substr($query, 0, -1);
+        $req = $db->prepare($query);
+        if(!$req->execute($vars)){
+            var_dump($req->errorInfo());
+            die();
+        }
+    }
+
     public static function recherche($q, $limite = 0){
         // renvoie un Array des utilisateurs correspondant à la recherche
         global $db;

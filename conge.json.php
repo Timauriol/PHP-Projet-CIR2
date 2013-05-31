@@ -2,14 +2,13 @@
 include("db.php");
 include("utilisateur.class.php");
 
+
 session_start();
 
-/*
 if(!isset($_SESSION["conge_login"]) || $_SESSION["conge_login"] === "" || (new Utilisateur($_SESSION["conge_login"]))->login === ""){
     header("HTTP/1.1 403 Forbidden");
     die("[]");
 }
- */
 
 
 include("conge.class.php");
@@ -23,9 +22,11 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
         switch($_GET["action"]){
             case "inserer":
                 $c->inserer();
+                Utilisateur::staticEditSolde($c->login, -1, (new DateTime($c->date))->format("Y"));
                 break;
             case "supprimer":
                 $c->supprimer();
+                Utilisateur::staticEditSolde($c->login, +1, (new DateTime($c->date))->format("Y"));
                 break;
         }
     }
@@ -38,7 +39,8 @@ else{ // GET (ou HEAD)
         isset($_GET["login"])? $_GET["login"] : null,
         isset($_GET["date_debut"])? $_GET["date_debut"] : null,
         isset($_GET["date_fin"])? $_GET["date_fin"] : null,
-        isset($_GET["limite"])? $_GET["limite"] : null
+        isset($_GET["limite"])? $_GET["limite"] : null,
+        isset($_GET["type"])? $_GET["type"] : null
     );
 
     echo("[\n");

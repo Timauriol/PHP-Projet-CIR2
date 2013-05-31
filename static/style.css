@@ -1,4 +1,4 @@
-html { font-family: sans-serif; color: #030; }
+html { font-family: sans-serif; color: #222; }
 
 a { color: #35f; cursor: pointer; }
 
@@ -132,7 +132,7 @@ div.barre-outils {
 .container {
     opacity: 0;
     transition: opacity .1s ease-out;
-    position: relative;
+    position: absolute;;
     padding: 0 5%;
     margin: 0 auto;
     max-width: 1000px;
@@ -217,4 +217,78 @@ ul:hover > .utilisateur.actif:hover { background: #def; }
 
 .autocomplete .login {
     font-size: 11px;
+}
+
+.init input {
+    border: 1px solid #444;
+}
+
+.init > table {
+    border-collapse: collapse;
+    margin: 30px auto;
+}
+
+.init td { padding: 5px 15px; }
+
+.init td:first-child { text-align: right; }
+
+.init col:first-child { border-right: 1px solid #222; }
+
+.suppr {
+    color: #933;
+}
+
+.ajout-periode > span {
+    color: #393;
+    font-weight: bold;
+}
+
+.avertissement {
+    color: #b22;
+    position: relative;
+    display: none;
+    min-width: 300px;
+    font-weight: bold;
+}
+
+.avertissement.actif {
+    display: inline-block;
+}
+
+.avertissement span {
+    position: absolute;
+    display: none;
+    background: white;
+    top: -0.5em;
+    left: 1em;
+    padding: 5px;
+}
+
+.avertissement:hover span {
+    display: inline;
+}
+
+.init ul.conges li{
+    padding: 3px 0;
+}
+.init ul.conges li.incorrect{
+    background: #fcc;
+}
+
+@keyframes clignote {
+    0%  { opacity: 1; }
+    16% { opacity: 0; }
+    33% { opacity: 1; }
+    50% { opacity: 0; }
+    66% { opacity: 1; }
+    83% { opacity: 0; }
+    100%{ opacity: 1; }
+}
+
+.init ul.conges li.clignote{
+    animation: clignote 0.5s;
+}
+
+.init ul.conges input{
+    width: 60px;
 }

@@ -1,12 +1,27 @@
 <?php
 
+include_once("outils.php");
+
 class Conge{
     public $login;
     public $date;
-    function __construct($date, $login){
+    public $type;
+    function __construct($date, $login, $type = null){
         if(!is_string($login) || !is_string($date)) die("Paramètres incorrects pour Conge()");
         $this->login = $login;
         $this->date = $date;
+        if($type)
+            $this->type = $type;
+        else{
+            $dt = new DateTime($date);
+            if(ferie($dt))
+                $this->type = "ferie";
+            else if($dt->format("w") == 0 || $dt->format("w") == 6)
+                $this->type = "weekend";
+            else
+                $this->type = "conge";
+        }
+
     }
     public function supprimer(){
         global $db;
@@ -15,13 +30,27 @@ class Conge{
     }
     public function inserer(){
         global $db;
-        $req = $db->prepare("INSERT INTO conges (date, login) VALUES (?, ?)");
-        $req->execute(array($this->date, $this->login));
+        $req = $db->prepare("INSERT INTO conges (date, login, type) VALUES (?, ?, ?)");
+        $req->execute(array($this->date, $this->login, $this->type));
     }
-    public static function liste($login = null, $date_debut = null, $date_fin = null, $limite = null){
+    public static function insererListe($conges){
+        global $db;
+        $query = "INSERT INTO conges (date, login, type) VALUES ";
+        $args = array();
+        foreach($conges as $conge){
+            $query .= "(?, ?, ?),";
+            array_push($args, $conge->date);
+            array_push($args, $conge->login);
+            array_push($args, $conge->type);
+        }
+        $query = substr($query, 0, -1); // on vire le "," final
+        $req = $db->prepare($query);
+        return($req->execute($args));
+    }
+    public static function liste($login = null, $date_debut = null, $date_fin = null, $limite = null, $type = null){
         // les dates sont attendues sous format ISO : 2000-12-31 (ou 2000-12-31 23:59)
         global $db;
-        $query = "SELECT date, login FROM conges WHERE 1=1";
+        $query = "SELECT date, login, type FROM conges WHERE 1=1";
         $args = array();
         if($login){
             $query .= " AND login = ?";
@@ -35,6 +64,10 @@ class Conge{
             $query .= " AND date <= ?";
             array_push($args, $date_fin);
         }
+        if($type){
+            $query .= " AND type = ?";
+            array_push($args, $type);
+        }
         $query .= " ORDER BY date ASC";
         if($limite) $query .= " LIMIT " . $limite;
         $req = $db->prepare($query);
@@ -43,7 +76,7 @@ class Conge{
         $conges = array();
 
         while($res = $req->fetch())
-            array_push($conges, new Conge($res[0], $res[1]));
+            array_push($conges, new Conge($res[0], $res[1], $res[2]));
 
         return $conges;
     }
