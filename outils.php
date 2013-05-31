@@ -34,6 +34,8 @@ function ferie($date){
 
 }
 
+include_once("db.class.php");
+
 function estConnecte(){
     session_start();
     if(!isset($_SESSION["conge_login"])) return false;

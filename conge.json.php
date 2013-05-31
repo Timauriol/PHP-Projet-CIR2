@@ -34,8 +34,6 @@ else {
     }
     else{ // GET (ou HEAD)
 
-        $echappement = array('\\' => '\\\\', '"' => '\\"');
-
         $conges = Conge::liste(
             isset($_GET["login"])? $_GET["login"] : null,
             isset($_GET["date_debut"])? $_GET["date_debut"] : null,
@@ -44,23 +42,7 @@ else {
             isset($_GET["type"])? $_GET["type"] : null
         );
 
-        echo("[\n");
-        $premier = true;
-        foreach($conges as $c){
-            if($premier)
-                $premier = false;
-            else
-                echo(",");
-            $d = new DateTime($c->date);
-        ?>
-            {
-                "date": "<?=$c->date?>",
-                "ts": <?=$d->getTimestamp()?>,
-                "login": "<?=strtr($c->login, $echappement)?>"
-            }
-        <?php
-        }
-        echo("]");
+        echo(json_encode($conges));
     }
 }
 ?>

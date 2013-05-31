@@ -6,9 +6,12 @@ class Conge{
     public $login;
     public $date;
     public $type;
+    public $ts;
     function __construct($date, $login, $type = null){
         $this->login = $login;
         $this->date = $date;
+        $d = new DateTime($this->date);
+        $this->ts = $d->getTimestamp();
         if($type)
             $this->type = $type;
         else{
