@@ -1,4 +1,7 @@
 <?php
+/*
+retourne le solde pour un utilisateur et une année
+*/
 include_once("db.class.php");
 include_once("utilisateur.class.php");
 include_once("outils.php");
