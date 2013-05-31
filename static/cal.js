@@ -861,6 +861,7 @@ function envoiInit(){
                 succes.classList.add("succes");
                 succes.appendChild(document.createTextNode("Initialisation des congés " + annee + " effectuée avec succès !"));
                 init.appendChild(succes);
+                verifAnnee();
             }
             var envoi = init.querySelector(".envoi")
             envoi.disabled = false;
