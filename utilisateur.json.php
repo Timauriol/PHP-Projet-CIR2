@@ -11,7 +11,7 @@ else{
 
 
     include_once("config.php");
-    include_once("db.php");
+    include_once("db.class.php");
 
     $utilisateurs = isset($_GET["q"])?Utilisateur::recherche($_GET["q"], 4):Utilisateur::tous();
 

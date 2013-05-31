@@ -1,5 +1,5 @@
 <?php
-include_once("db.php");
+include_once("db.class.php");
 
 class Utilisateur{
     public $login = "";

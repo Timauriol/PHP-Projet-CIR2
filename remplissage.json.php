@@ -1,5 +1,5 @@
 <?php
-include_once("db.php");
+include_once("db.class.php");
 include_once("outils.php");
 include_once("utilisateur.class.php");
 include_once("conge.class.php");
