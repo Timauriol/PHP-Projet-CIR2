@@ -127,7 +127,6 @@ div.barre-outils {
 .container {
     opacity: 0;
     transition: opacity .1s ease-out;
-    position: absolute;;
     padding: 0 5%;
     margin: 0 auto;
     max-width: 1000px;
