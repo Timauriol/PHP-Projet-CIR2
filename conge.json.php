@@ -7,7 +7,7 @@ header("Content-Type: application/json");
 
 if(!estConnecte()){
     header("HTTP/1.1 403 Forbidden");
-    echo("[]")
+    echo("[]");
 }
 else {
 

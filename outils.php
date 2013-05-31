@@ -40,7 +40,7 @@ function estConnecte(){
     if(!isset($_SESSION["conge_login"])) return false;
     $db = DB::getInstance()->getPdo();
     $req = $db->prepare("SELECT 1 FROM utilisateur WHERE login = ?");
-    $req->execute($_SESSION["conge_login"]);
+    $req->execute(array($_SESSION["conge_login"]));
     $res = $req->fetch();
     if (!$res) return false;
     else return true;

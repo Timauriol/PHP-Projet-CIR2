@@ -6,6 +6,7 @@ $error = "";
 session_start(); // initialise $_SESSION
 
 if(isset($_POST["login"]) && isset($_POST["mdp"])){
+    $db = DB::getInstance()->getPdo();
     $req = $db->prepare("SELECT admin FROM utilisateur WHERE login = :login AND mdp = sha2(:mdp, 512)");
     $req->bindParam(':login', $_POST["login"]);
     $req->bindParam(':mdp', $_POST["mdp"]);

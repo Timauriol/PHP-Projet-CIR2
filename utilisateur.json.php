@@ -3,7 +3,7 @@ include_once("utilisateur.class.php");
 include_once("outils.php");
 header("Content-Type: application/json");
 
-if(!estConnecte())
+if(!estConnecte()){
     header("HTTP/1.1 403 Forbidden");
     echo("[]");
 }
