@@ -838,21 +838,20 @@ function envoiInit(){
     if(document.querySelector(".init .avertissement").classList.contains("actif") && !confirm("Vous êtes sur le point d'écraser les congés de l'année " + annee + ". Êtes vous sur de vouloir continuer?")) return;
     var conges = [];
     for(var i = 0; i < liconges.children.length; i++){
-        if(!incorrect){
-            var argsDebut = conge.querySelector(".debut").value.split("/");
-            var date = new Date(window.annee, argsDebut[1] - 1, argsDebut[0]);
-            var argsFin = conge.querySelector(".fin").value.split("/");
-            var dateFin = new Date(window.annee, argsFin[1] - 1, argsFin[0], 12);
-            while(date-0 <= dateFin-0){
-                if(date.getDay() != 0 && date.getDay() != 6 && !ferie(annee, date.getMonth(), date.getDate())){ // on filtre les week-ends et feriés
-                    var trouve = false;
-                    for(var j = 0; j < conges.length; j++)
-                        if(conges[j].ts == date - 0) trouve = true;
-                    if(!trouve)
-                        conges.push({"date": jsToPHPDate(date), "ts": date-0});
-                }
-                date.setHours(date.getHours() + 12);
+        var conge = liconges.children[i];
+        var argsDebut = conge.querySelector(".debut").value.split("/");
+        var date = new Date(window.annee, argsDebut[1] - 1, argsDebut[0]);
+        var argsFin = conge.querySelector(".fin").value.split("/");
+        var dateFin = new Date(window.annee, argsFin[1] - 1, argsFin[0], 12);
+        while(date-0 <= dateFin-0){
+            if(date.getDay() != 0 && date.getDay() != 6 && !ferie(annee, date.getMonth(), date.getDate())){ // on filtre les week-ends et feriés
+                var trouve = false;
+                for(var j = 0; j < conges.length; j++)
+                    if(conges[j].ts == date - 0) trouve = true;
+                if(!trouve)
+                    conges.push({"date": jsToPHPDate(date), "ts": date-0});
             }
+            date.setHours(date.getHours() + 12);
         }
     }
 
