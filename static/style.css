@@ -66,6 +66,7 @@ div.barre-outils {
     -moz-user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none;
+    line-height: 30px;
 }
 
 .bouton {
