@@ -64,7 +64,7 @@ include("_head.php");
 <div class="bouton suppression" title="Supprimer"><img src="static/suppr.png"></div>
 <div class="bouton mois-suivant" title="Mois suivant"><img src="static/suiv.png"></div>
 <div class="bouton mois-precedent" title="Mois précédent"><img src="static/prec.png"></div>
-<div class="bouton selecteur-mois"><span class="date">Janvier 1985</span><!-- <img src="static/menu.png">--></div>
+<div class="bouton selecteur-mois"><span class="date">Janvier 1985</span> <img src="static/menu.png"></div>
 <div class="solde"></div>
 <div style="clear:both;"></div>
 </div>

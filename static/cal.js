@@ -297,9 +297,38 @@ function initNavCalendrier(){
     var selecteur = document.querySelector(".selecteur-mois");
     suivant.addEventListener("click", moisSuivant, false);
     precedent.addEventListener("click", moisPrecedent, false);
-    selecteur.addEventListener("click", function(e){
-        e.preventDefault();
-    }, false);
+    selecteur.addEventListener("click", ouvrirSelecteurMois, false);
+}
+
+function ouvrirSelecteurMois(){
+    var selecteur = this;
+    console.log(this);
+    var menu = document.createElement("ul");
+    menu.classList.add("menu");
+    function fermer(e){
+        console.log("bite 8====D");
+        selecteur.removeChild(menu);
+        document.body.removeEventListener("click", fermer, false);
+    }
+    var date = new Date(annee, 0, 1);
+    for(;date.getFullYear() == annee; date.setMonth(date.getMonth() + 1)){
+        console.log("HI :3");
+        var mois = document.createElement("li");
+        mois.mois = date.getMonth();
+        mois.addEventListener("click", function(e){
+            console.log(this.mois);
+            changeMois(annee, this.mois);
+            rafraichir();
+            e.cancelBubble = true;
+            fermer();
+        }, false)
+        mois.appendChild(document.createTextNode(nomMois(date.getMonth()) + " " + annee));
+        menu.appendChild(mois);
+    }
+    selecteur.appendChild(menu);
+    window.setTimeout(function(){
+        document.body.addEventListener("click", fermer, false);
+    }, 100);
 }
 
 function rafraichir(){
@@ -388,7 +417,8 @@ window.onload = function(){
     initBarreOutils();
     initSelection();
     if(window.location.hash != ""){
-        var args = window.location.hash.slice(1).split("&");
+        var args = window.location.hash.slice(1).split("&"); // ici on lit les arguments dans l'url (les trucs après #)
+                                                             // pour voir si on peut revenir à l'état précédent
         for(var i = 0; i < args.length; i++){
             var arg = args[i].split("=");
             if(arg.length == 2){
