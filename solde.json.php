@@ -9,6 +9,7 @@ include_once("outils.php");
 header("Content-Type: application/json");
 
 if(!estConnecte()){
+    // on envoie un 403 : Accès refusé
     header("HTTP/1.1 403 Forbidden");
     echo("{}");
 }
@@ -18,7 +19,7 @@ else {
     $annee = $_GET["annee"];
     $u = new Utilisateur($_GET["login"]);
 
-    if($u->login == ""){
+    if($u->login == ""){ // l'utilisateur n'existe pas
         echo("{}");
     } else {
         if(isset($_POST["changement"]))

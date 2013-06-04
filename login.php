@@ -2,14 +2,17 @@
 include_once("db.class.php");
 include_once("outils.php");
 
+// page de login
+
 $error = "";
 session_start(); // initialise $_SESSION
 
 if(isset($_POST["login"]) && isset($_POST["mdp"])){
     $db = DB::getInstance()->getPdo();
     $req = $db->prepare("SELECT admin FROM utilisateur WHERE login = :login AND mdp = sha2(:mdp, 512)");
-    $req->bindParam(':login', $_POST["login"]);
-    $req->bindParam(':mdp', $_POST["mdp"]);
+    // ↑ requète qui retournera un utilisateur si ses identifiants sont corrects, rien sinon
+    $req->bindValue(':login', $_POST["login"]);
+    $req->bindValue(':mdp', $_POST["mdp"]);
 
     $req->execute();
 
@@ -17,12 +20,14 @@ if(isset($_POST["login"]) && isset($_POST["mdp"])){
     else if($req->fetch()["admin"] != "1") $error = "Vous n'avez pas les droits d'accès à la console administrateur.";
     else
         $_SESSION["conge_login"] = $_POST["login"];
+        // l'utilisateur sera redirigé ci-dessous ↓
 }
 
 if(isset($_SESSION["conge_login"]) && $_SESSION["conge_login"] != "")
-    redirect();
+    // si la session existe déjà (ou si elle vient d'être créée, on redirige
+    redirect(); // vers index.php par défaut
 else {
-
+    // on affiche le formulaire de connexion
     include_once("_head.php");
 
     echo("<div class=\"connexion\"><h1>Connexion</h1>");

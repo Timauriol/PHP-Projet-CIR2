@@ -1,2 +1,3 @@
+<?php /* footer */ ?>
     </body>
 </html>

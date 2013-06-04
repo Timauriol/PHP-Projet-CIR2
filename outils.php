@@ -1,11 +1,14 @@
 <?php
 
 function redirect($loc = "."){
+    // redirige l'utilisateur
+    // ⚠ doit être utilisée au tout début de la page, avant tout affichage
     header("HTTP/1.1 302 Found");
     header("Location: " . $loc);
 }
 
 function ferie($date){
+    // renvoie si une date (au format DateTime()) correspond à un jour ferié ou non
     $jour = $date->format("j");
     $mois = $date->format("n");
     if(
@@ -18,15 +21,16 @@ function ferie($date){
         ($jour == 11 && $mois == 11) || // 11 novembre : armistice
         ($jour == 25 && $mois == 12)    // 25 décembre : noël
     ) return true;
+    // ↓ timestamp de la date de pâques
     $tspaques = easter_date($date->format("Y"));
     $jferie = DateTime::createFromFormat("U", $tspaques);
-    $di = new DateInterval("P1D");
+    $di = new DateInterval("P1D"); // intervalle de 1 jour
     $jferie->add($di); // lundi de pâques
     if($jour == $jferie->format("j") && $mois == $jferie->format("n")) return true;
-    $di = new DateInterval("P38D");
+    $di = new DateInterval("P38D"); // intervalle de 38 jours
     $jferie->add($di); // jeudi de l'ascension
     if($jour == $jferie->format("j") && $mois == $jferie->format("n")) return true;
-    $di = new DateInterval("P11D");
+    $di = new DateInterval("P11D"); // intervalle de 11 jours
     $jferie->add($di); // lundi de la pentecôte
     if($jour == $jferie->format("j") && $mois == $jferie->format("n")) return true;
 
@@ -37,6 +41,7 @@ function ferie($date){
 include_once("db.class.php");
 
 function estConnecte(){
+    // renvoie si l'utilisateur à une session valide
     session_start();
     if(!isset($_SESSION["conge_login"])) return false;
     $db = DB::getInstance()->getPdo();
@@ -46,6 +51,5 @@ function estConnecte(){
     if (!$res) return false;
     else return true;
 }
-
 
 ?>

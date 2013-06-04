@@ -3,12 +3,14 @@ include_once("db.class.php");
 include_once("outils.php");
 include_once("utilisateur.class.php");
 
+// affiche l'application
+
 if(!estConnecte()){
+    // on vide la session et on redirige
     $_SESSION["conges_login"] = "";
     redirect("login.php");
 }
 else {
-
     include_once("_head.php");
     ?>
     <nav>

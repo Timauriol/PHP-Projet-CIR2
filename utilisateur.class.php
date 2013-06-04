@@ -1,4 +1,6 @@
 <?php
+// représente un utilisateur
+
 include_once("db.class.php");
 
 class Utilisateur{
@@ -7,10 +9,10 @@ class Utilisateur{
     public $admin = false;
 
     function __construct($login, $nom_prenom = null, $admin = null){
-        $db = DB::getInstance()->getPdo();
         /* Utilisateur("ppouch") vérifie le login et récupère les infos dans la BDD
-           Utilisateur("ppouch", "Pascal Pouchard", false) remplit seulement les champs 
+           Utilisateur("ppouch", "Pascal Pouchard", false) remplit seulement les champs
            utile si l'on récupère plusieurs utilisateurs dans une même requète */
+        $db = DB::getInstance()->getPdo();
         if(!$nom_prenom || !$admin){
             $req = $db->prepare("SELECT nom_prenom, admin FROM utilisateur WHERE login = :login");
             $req->bindValue(':login', $login);
@@ -35,17 +37,14 @@ class Utilisateur{
         $req = $db->prepare("SELECT solde FROM solde WHERE login = ? AND annee = ?");
         $req->execute(array($this->login, $annee));
         $res = $req->fetch();
-        if(!$res){
-            $req = $db->prepare("INSERT INTO solde (solde, login, annee) values (0,?,?)");
-            $req->execute(array($this->login, $annee));
+        if(!$res)
             return 0;
-        }
-        else{
+        else
             return $res[0];
-        }
     }
 
-    public static function staticEditSolde($login, $modif, $annee){ // relatif, ie. $u->setSolde(-1, 2013) pour réduire le solde de 1
+    public static function staticEditSolde($login, $modif, $annee){
+        // relatif, ie. $u->setSolde(-1, 2013) pour réduire le solde de 1
         $db = DB::getInstance()->getPdo();
         $req = $db->prepare("UPDATE solde SET solde = solde + ? WHERE login = ? AND annee = ?");
         $req->bindValue(1, $modif);
@@ -89,7 +88,7 @@ class Utilisateur{
             $query .= "(?, ?, ?),";
             array_push($vars, $solde, $u->login, $annee);
         }
-        $query = substr($query, 0, -1);
+        $query = substr($query, 0, -1); // on enlève la virgule en trop
         $req = $db->prepare($query);
         $req->execute($vars);
     }
@@ -102,6 +101,7 @@ class Utilisateur{
 
         $query = "SELECT login, nom_prenom, admin FROM utilisateur WHERE 1=1";
 
+        // on découpe la requète en mots-clés
         $args = explode(" ", trim($q));
         for($i=0; $i < count($args); $i++)
             $query .= " AND ( login COLLATE utf8_general_ci LIKE ? OR nom_prenom COLLATE utf8_general_ci LIKE ? )";
@@ -111,7 +111,7 @@ class Utilisateur{
         $req = $db->prepare($query);
 
         for($i=0; $i < count($args); $i++){
-            $arg = "%".$args[$i]."%"; // % : wildcard
+            $arg = "%".$args[$i]."%"; // % : joker
             $req->bindValue($i*2+1, $arg); // les paramètres commencent à 1
             $req->bindValue($i*2+2, $arg);
         }

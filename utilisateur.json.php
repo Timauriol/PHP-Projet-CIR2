@@ -7,11 +7,11 @@ include_once("outils.php");
 header("Content-Type: application/json");
 
 if(!estConnecte()){
+    // on envoie un 403 : Accès refusé
     header("HTTP/1.1 403 Forbidden");
     echo("[]");
 }
 else{
-
     include_once("utilisateur.class.php");
     include_once("config.php");
     include_once("db.class.php");

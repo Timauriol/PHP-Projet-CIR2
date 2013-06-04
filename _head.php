@@ -1,4 +1,5 @@
 <?php
+// header du site
 include_once("config.php");
 header("Content-Type: text/html; charset=UTF-8");
 ?>
