@@ -8,5 +8,6 @@ header("Content-Type: text/html; charset=UTF-8");
     <head>
         <title>Super congé 2000<?=isset($title)?" - " . $title : ""?></title>
         <link rel="stylesheet" type="text/css" href="<?=$WEBROOT?>/static/style.css"/>
+        <link rel="icon" type="image/png" href="<?=$WEBROOT?>/static/favicon.png"/>
     </head>
     <body>
